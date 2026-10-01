@@ -295,10 +295,15 @@ footer .lang::before{content:"🌐 ";font-weight:400}
 
 /* ===== Mobile bottom navigation (phones/tablets only; desktop untouched) ===== */
 .bnav{display:none}
-.only-m{display:none}
+.only-m,.only-mb{display:none}
 @media(max-width:900px){
   .links,.menu{display:none!important}
   .only-m{display:inline}
+  .only-mb{display:block}
+  html{overflow-x:clip}
+  .hero>div{min-width:0;width:100%;padding:0 16px}
+  .buttons{flex-wrap:wrap}
+  .buttons .btn{flex:1 1 auto}
   body{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
   .bnav{display:block;position:fixed;left:0;right:0;bottom:0;z-index:60;height:calc(70px + env(safe-area-inset-bottom,0px));pointer-events:none;--cx:-200px}
   .bnav-bar{position:absolute;inset:0;pointer-events:none;background:rgba(10,10,10,.96);border-top:1px solid rgba(216,173,75,.30);box-shadow:0 -10px 30px rgba(0,0,0,.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
@@ -317,3 +322,10 @@ footer .lang::before{content:"🌐 ";font-weight:400}
 }
 @keyframes bnavPop{from{transform:translateY(14px) scale(.6);opacity:0}to{transform:none;opacity:1}}
 @media(prefers-reduced-motion:reduce){.bnav-i.on .bnav-ic{animation:none}}
+
+@media(max-width:560px){.hero h1{font-size:clamp(40px,14vw,80px);letter-spacing:-2px}.hero{padding:56px 0}}
+
+/* phones: stop big headings and panels from pushing the page wider than the screen */
+@media(max-width:900px){.grid2,.grid3,.profile{grid-template-columns:minmax(0,1fr)}.panel,.teamcard,.s7box>*{min-width:0}.section h2,.panel h2,.hero h1{overflow-wrap:anywhere}}
+@media(max-width:560px){.section h2{font-size:clamp(28px,9.5vw,42px)}.panel h2{font-size:clamp(28px,9.5vw,42px)!important}.titleline{flex-wrap:wrap}.wrap{padding:0 18px}}
+@media(max-width:900px){.only-mb .btn{margin-top:10px}}
