@@ -24,7 +24,7 @@ window.fillDynamic=function(){
   sk.className='mfl-skeleton';
   sk.innerHTML='<div class="mfl-skeleton-card"><div class="mfl-skeleton-logo"></div><div class="mfl-skeleton-line w1"></div><div class="mfl-skeleton-line w2"></div><div class="mfl-skeleton-line w3"></div></div>';
   document.body.appendChild(sk);
-  window.addEventListener('load',function(){setTimeout(function(){sk.classList.add('hide');setTimeout(function(){sk.remove()},500)},220)});
+  setTimeout(function(){sk.classList.add('hide');setTimeout(function(){sk.remove()},2)},1);
 })();
 window.addEventListener('DOMContentLoaded',()=>{
   fillDynamic();
@@ -60,7 +60,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   order.forEach(function(h){
     var a=src[h]; if(!a) return;
     var on=(h===file);
-    html+='<a href="'+h+'" class="bnav-i'+(on?' on':'')+(h==='index.html'?' home-center':'')+'"'+(on?' aria-current="page"':'')+'>'+
+    html+='<a href="'+h+'" class="bnav-i'+(on?' on':'')+'"'+(on?' aria-current="page"':'')+'>'+
       '<span class="bnav-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+ICONS[h]+'</svg></span>'+
       '<span class="bnav-t"'+(SHORT[h]?' data-bn="'+SHORT[h][1]+'"':(a.getAttribute('data-bn')?' data-bn="'+a.getAttribute('data-bn')+'"':''))+'>'+(SHORT[h]?SHORT[h][0]:a.textContent)+'</span></a>';
   });
@@ -68,9 +68,16 @@ window.addEventListener('DOMContentLoaded',()=>{
   document.body.appendChild(bar);
   function place(){
     bar.classList.remove('none');
-    bar.style.setProperty('--cx','50%');
+    var active=bar.querySelector('.bnav-i.on');
+    if(!active) return;
+    var r=active.getBoundingClientRect();
+    var cx=r.left+(r.width/2);
+    bar.style.setProperty('--cx',cx+'px');
   }
-  place(); window.addEventListener('resize',place); window.addEventListener('load',place);
+  place();
+  window.addEventListener('resize',place);
+  window.addEventListener('orientationchange',function(){setTimeout(place,60)});
+  window.addEventListener('load',place);
   /* Updates is not in the bottom bar, so give phones a link to it in the footer */
   var fl=document.querySelector('footer .flinks');
   if(fl&&!fl.querySelector('[href="updates.html"]')){
@@ -79,4 +86,44 @@ window.addEventListener('DOMContentLoaded',()=>{
     ab.setAttribute('data-bn',up&&up.getAttribute('data-bn')?up.getAttribute('data-bn'):'আপডেট');
     ab.textContent='Updates'; fl.insertBefore(ab,fl.firstChild);
   }
+})();
+
+
+/* ===== Sponsor profiles ===== */
+(function(){
+  var cards=document.querySelectorAll('.sponsor-card[data-sponsor]');
+  if(!cards.length) return;
+  var DATA={
+    city:{
+      name:'City Cosmetics',
+      logo:'assets/sponsor-city-cosmetics.png',
+      season:'MFL Season 5 & Season 6',
+      sponsor:'Alim Bhaiya',
+      location:'Central Plaza, Panchagarh, Bangladesh',
+      category:'Beauty, Cosmetics & Personal Care',
+      facebook:'https://www.facebook.com/citycosmeticsofficial',
+      desc:'City Cosmetics is a local beauty, cosmetics and personal care shop based at Central Plaza, Panchagarh. MFL is grateful for its support across Season 5 and Season 6.'
+    },
+    northbyte:{
+      name:'NorthByte Panchagarh',
+      logo:'assets/sponsor-northbyte.png',
+      season:'MFL Season 6',
+      sponsor:'Farhan Ibne Labib (Sourov)',
+      location:'Tetulia Road, Lichutola, Panchagarh, Bangladesh',
+      category:'Smartphone, Accessories & Gadgets',
+      facebook:'https://www.facebook.com/share/1F9uuZ68F7/',
+      desc:'NorthByte Panchagarh is a local tech and lifestyle hub offering smartphones, accessories and gadgets. MFL thanks NorthByte for supporting Season 6.'
+    }
+  };
+  var modal=document.createElement('div');
+  modal.className='sponsor-modal';
+  modal.setAttribute('aria-hidden','true');
+  modal.innerHTML='<div class="sponsor-modal-backdrop" data-close-sponsor></div><div class="sponsor-modal-box" role="dialog" aria-modal="true" aria-labelledby="sponsor-modal-title"><button class="sponsor-modal-close" type="button" aria-label="Close sponsor profile" data-close-sponsor>×</button><div class="sponsor-modal-logo-wrap"><img id="sponsor-modal-logo" src="" alt=""/></div><div class="eyebrow">OFFICIAL MFL PARTNER</div><h2 id="sponsor-modal-title"></h2><p id="sponsor-modal-desc" class="lead"></p><div class="sponsor-meta"><div><span>Sponsored</span><b id="sponsor-modal-season"></b></div><div><span>Sponsored by</span><b id="sponsor-modal-person"></b></div><div><span>Location</span><b id="sponsor-modal-location"></b></div><div><span>Category</span><b id="sponsor-modal-category"></b></div></div><a id="sponsor-modal-facebook" class="sponsor-facebook" href="#" target="_blank" rel="noopener noreferrer">Visit Facebook Profile ↗</a></div>';
+  document.body.appendChild(modal);
+  var logo=modal.querySelector('#sponsor-modal-logo'),title=modal.querySelector('#sponsor-modal-title'),desc=modal.querySelector('#sponsor-modal-desc'),season=modal.querySelector('#sponsor-modal-season'),person=modal.querySelector('#sponsor-modal-person'),locationEl=modal.querySelector('#sponsor-modal-location'),category=modal.querySelector('#sponsor-modal-category'),facebook=modal.querySelector('#sponsor-modal-facebook');
+  function close(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.classList.remove('sponsor-modal-open');}
+  function open(key){var d=DATA[key];if(!d)return;logo.src=d.logo;logo.alt=d.name;title.textContent=d.name;desc.textContent=d.desc;season.textContent=d.season;person.textContent=d.sponsor;locationEl.textContent=d.location;category.textContent=d.category;facebook.href=d.facebook;modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.classList.add('sponsor-modal-open');}
+  cards.forEach(function(card){card.addEventListener('click',function(){open(card.dataset.sponsor)});});
+  modal.querySelectorAll('[data-close-sponsor]').forEach(function(el){el.addEventListener('click',close)});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
 })();
