@@ -4,7 +4,7 @@
 const CONFIG = {
   defaultLang:  "en",                          // "en" = English first, "bn" = Bangla first. Visitors can switch with the button.
   contactName:  "Nasemul Iqbal Rownok",
-  contactEmail: "",                            // put the MFL email here when it is ready, e.g. "mfl@gmail.com". Leave empty to hide it.
+  contactEmail: "mfl.official2021@gmail.com",                            // put the MFL email here when it is ready, e.g. "mfl@gmail.com". Leave empty to hide it.
   season:    "Season 7",                       // shown on the pages
   fees:      { Player: 280, Captain: 700 },    // shown on the form. Keep same as the Apps Script FEES.
   opensAt:   "2026-12-16T00:00:00+06:00",     // registration opens: 16 Dec 2026, 12:00 AM Bangladesh time

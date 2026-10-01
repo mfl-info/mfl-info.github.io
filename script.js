@@ -11,7 +11,7 @@ window.fillDynamic=function(){
   document.querySelectorAll('[data-fee]').forEach(e=>e.textContent='৳'+N(CONFIG.fees[e.dataset.fee]));
   document.querySelectorAll('[data-price]').forEach(e=>e.textContent=bn?'ফি ৳'+N(CONFIG.fees[e.dataset.price])+' (অনুমোদনের পর)':'Fee ৳'+CONFIG.fees[e.dataset.price]+' after approval');
   document.querySelectorAll('[data-tag]').forEach(e=>{const k=e.dataset.tag;e.textContent=bn?'সিজন '+N(CONFIG.season.replace(/\D/g,''))+' · '+(k==='APPLICATION'?'আবেদন':'স্ট্যাটাস'):CONFIG.season.toUpperCase()+' · '+k});
-  const mail=CONFIG.contactEmail,nm=bn?'নাসেমুল ইকবাল রওনক':CONFIG.contactName;
+  const mail=CONFIG.contactEmail,nm=bn?'নাসিমুল ইকবাল রউনক':CONFIG.contactName;
   document.querySelectorAll('[data-contact]').forEach(e=>{e.innerHTML=(bn?'যোগাযোগ: ':'Contact: ')+nm+(mail?' · <a href="mailto:'+mail+'">'+mail+'</a>':'')});
   if(mail&&$('mailrow')){$('mailrow').style.display='block';$('maillink').textContent=mail;$('maillink').href='mailto:'+mail}
   if($('s7fee'))$('s7fee').textContent=bn?'অনুমোদনের পর ফি: খেলোয়াড় ৳'+N(CONFIG.fees.Player)+' · ক্যাপ্টেন ৳'+N(CONFIG.fees.Captain):'Fee after approval: Player ৳'+CONFIG.fees.Player+' · Captain ৳'+CONFIG.fees.Captain;
