@@ -39,7 +39,7 @@ window.addEventListener('DOMContentLoaded',()=>{
     'results.html':'<path d="M8 4h8v5a4 4 0 0 1-8 0V4Z"/><path d="M8 6H4.8v1.2A3.3 3.3 0 0 0 8 10.5M16 6h3.2v1.2a3.3 3.3 0 0 1-3.2 3.3"/><path d="M12 13v4M8.6 20h6.8M9.8 17h4.4"/>',
     'about.html':'<circle cx="12" cy="12" r="8.6"/><path d="M12 11v5.4"/><circle cx="12" cy="7.8" r=".7" fill="currentColor"/>'
   };
-  var order=['index.html','teams.html','schedule.html','results.html','about.html'];
+  var order=['teams.html','schedule.html','index.html','results.html','about.html'];
   var SHORT={'about.html':['About','সম্পর্কে']};
   var nav=document.querySelector('.links'); if(!nav) return;
   var src={}; nav.querySelectorAll('a').forEach(function(a){src[a.getAttribute('href')]=a;});
@@ -51,7 +51,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   order.forEach(function(h){
     var a=src[h]; if(!a) return;
     var on=(h===file);
-    html+='<a href="'+h+'" class="bnav-i'+(on?' on':'')+'"'+(on?' aria-current="page"':'')+'>'+
+    html+='<a href="'+h+'" class="bnav-i'+(on?' on':'')+(h==='index.html'?' home-center':'')+'"'+(on?' aria-current="page"':'')+'>'+
       '<span class="bnav-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+ICONS[h]+'</svg></span>'+
       '<span class="bnav-t"'+(SHORT[h]?' data-bn="'+SHORT[h][1]+'"':(a.getAttribute('data-bn')?' data-bn="'+a.getAttribute('data-bn')+'"':''))+'>'+(SHORT[h]?SHORT[h][0]:a.textContent)+'</span></a>';
   });
