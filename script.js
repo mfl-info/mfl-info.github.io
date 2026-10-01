@@ -89,6 +89,15 @@ window.addEventListener('DOMContentLoaded',()=>{
 })();
 
 
+/* ===== MFL Center quick link ===== */
+(function(){
+  document.querySelectorAll('footer .flinks').forEach(function(fl){
+    if(!fl.querySelector('[href="center.html"]')){
+      var a=document.createElement('a'); a.href='center.html'; a.textContent='MFL Center'; fl.insertBefore(a,fl.firstChild);
+    }
+  });
+})();
+
 /* ===== Sponsor profiles ===== */
 (function(){
   var cards=document.querySelectorAll('.sponsor-card[data-sponsor]');

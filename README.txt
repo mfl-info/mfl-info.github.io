@@ -29,3 +29,5 @@ LOGOS
 
 LOGO ANIMATION
 - The logo (top bar and Home hero) plays a 7-second loop: hold, light flash, shrink to a point, burst back. It is in style.css (search "logoloop"). To stop it, delete the line starting ".logo-anim,.brand-logo{animation:...". It is turned off automatically for visitors who set "reduce motion" on their phone.
+
+Player Profiles: Season 6 lists all 56 squad nicknames. Opening a profile card shows both the player's full name and nickname.
