@@ -17,6 +17,15 @@ window.fillDynamic=function(){
   if($('s7fee'))$('s7fee').textContent=bn?'অনুমোদনের পর ফি: খেলোয়াড় ৳'+N(CONFIG.fees.Player)+' · ক্যাপ্টেন ৳'+N(CONFIG.fees.Captain):'Fee after approval: Player ৳'+CONFIG.fees.Player+' · Captain ৳'+CONFIG.fees.Captain;
   if($('s7k')&&Date.parse(CONFIG.opensAt)<=Date.now())$('s7k').textContent=bn?'রেজিস্ট্রেশন চলছে':'Registration is open';
 };
+
+/* ===== Subtle page skeleton ===== */
+(function(){
+  var sk=document.createElement('div');
+  sk.className='mfl-skeleton';
+  sk.innerHTML='<div class="mfl-skeleton-card"><div class="mfl-skeleton-logo"></div><div class="mfl-skeleton-line w1"></div><div class="mfl-skeleton-line w2"></div><div class="mfl-skeleton-line w3"></div></div>';
+  document.body.appendChild(sk);
+  window.addEventListener('load',function(){setTimeout(function(){sk.classList.add('hide');setTimeout(function(){sk.remove()},500)},220)});
+})();
 window.addEventListener('DOMContentLoaded',()=>{
   fillDynamic();
   const $=id=>document.getElementById(id);
@@ -58,11 +67,8 @@ window.addEventListener('DOMContentLoaded',()=>{
   bar.innerHTML=html+'</div>';
   document.body.appendChild(bar);
   function place(){
-    var on=bar.querySelector('.bnav-i.on');
-    if(!on){bar.classList.add('none');return;}
     bar.classList.remove('none');
-    var r=on.getBoundingClientRect();
-    bar.style.setProperty('--cx',(r.left+r.width/2)+'px');
+    bar.style.setProperty('--cx','50%');
   }
   place(); window.addEventListener('resize',place); window.addEventListener('load',place);
   /* Updates is not in the bottom bar, so give phones a link to it in the footer */
