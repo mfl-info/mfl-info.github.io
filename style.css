@@ -328,4 +328,16 @@ footer .lang::before{content:"🌐 ";font-weight:400}
 /* phones: stop big headings and panels from pushing the page wider than the screen */
 @media(max-width:900px){.grid2,.grid3,.profile{grid-template-columns:minmax(0,1fr)}.panel,.teamcard,.s7box>*{min-width:0}.section h2,.panel h2,.hero h1{overflow-wrap:anywhere}}
 @media(max-width:560px){.section h2{font-size:clamp(28px,9.5vw,42px)}.panel h2{font-size:clamp(28px,9.5vw,42px)!important}.titleline{flex-wrap:wrap}.wrap{padding:0 18px}}
-@media(max-width:900px){.only-mb .btn{margin-top:10px}}
+
+/* Updates shortcut card on the Home page (phones only) */
+@media(max-width:900px){
+  .updcard{display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:16px;background:linear-gradient(145deg,rgba(35,28,15,.85),rgba(11,11,11,.92));border:1px solid rgba(216,173,75,.35);box-shadow:0 10px 26px rgba(0,0,0,.35);-webkit-tap-highlight-color:transparent}
+  .updcard:active{transform:scale(.985)}
+  .updic{flex:0 0 auto;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#f6d983,#d8ad4b);color:#1a1205}
+  .updtx{flex:1;min-width:0;display:block}
+  .updtx b{display:block;font-family:Oswald,Impact,sans-serif;font-size:20px;letter-spacing:.6px;text-transform:uppercase;color:#fff;line-height:1.1}
+  .updtx small{display:block;margin-top:4px;font-size:12px;color:#aaa}
+  .updarr{flex:0 0 auto;display:grid;place-items:center;width:34px;height:34px}
+  .updarr svg{width:34px;height:34px}
+  .hero{overflow-x:clip}
+}
