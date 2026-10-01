@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+
+<html data-bn-title="স্ট্যাটাস ও পেমেন্ট | MFL" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Status &amp; Payment | MFL</title><meta content="Check your MFL application status and pay your fee after approval." name="description"/><meta content="#8e0710" name="theme-color"/><meta content="website" property="og:type"/><meta content="MosjidPara Football League" property="og:site_name"/><meta content="Status &amp; Payment | MosjidPara Football League" property="og:title"/><meta content="Check your MFL application status and pay your fee after approval." property="og:description"/><meta content="https://mfl-info.github.io/assets/og-image.png" property="og:image"/><meta content="1200" property="og:image:width"/><meta content="630" property="og:image:height"/><meta content="summary_large_image" name="twitter:card"/>
+<link href="style.css" rel="stylesheet"/>
+<link href="assets/favicon-mfl-only.png" rel="icon" type="image/png"/>
+<style>
+.regwrap{max-width:680px;margin:34px auto 0}
+.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:680px;margin:30px auto 0;padding:0;list-style:none;counter-reset:s}
+.flow li{counter-increment:s;background:rgba(12,12,12,.82);border:1px solid #292929;border-radius:9px;padding:14px 14px 14px 46px;position:relative;font-size:12px;line-height:1.5;color:#bbb}
+.flow li:before{content:counter(s);position:absolute;left:14px;top:14px;width:24px;height:24px;border-radius:50%;background:var(--gold);color:#111;font-weight:800;font-size:12px;display:grid;place-items:center}
+.flow b{display:block;color:#fff;font-size:13px;margin-bottom:2px}
+.panel h3{font-family:Oswald,Impact,sans-serif;font-size:26px;text-transform:uppercase;margin:0 0 14px}
+.field{margin-bottom:18px}
+.field label,.field .lbl{display:block;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold2);font-weight:800;margin-bottom:7px}
+.field label i,.field .lbl i{color:#e35a63;font-style:normal}
+.field input[type=text],.field input[type=tel]{width:100%;padding:13px 14px;background:#0e0e0e;border:1px solid #333;border-radius:7px;color:#fff;font:inherit;font-size:16px}
+.field input::placeholder{color:#6a6a6a}
+.field input:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold)}
+.field.bad input{border-color:#e35a63}
+.field.bad .card{border-color:#e35a63}
+.hint{font-size:11px;color:#888;margin-top:6px;line-height:1.5}
+.err{display:none;font-size:12px;color:#ff8f96;margin-top:6px}
+.field.bad .err{display:block}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.types{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.type{position:relative;display:block;margin:0}
+.type input{position:absolute;opacity:0;width:1px;height:1px}
+.field .type .card{display:block;padding:16px;border:1px solid #333;border-radius:9px;background:#0e0e0e;cursor:pointer;text-transform:none;letter-spacing:0;color:#fff;font-weight:400}
+.type .card:hover{background:#131313}
+.type input:checked + .card{border-color:var(--gold);background:rgba(216,173,75,.1)}
+.type input:focus-visible + .card{outline:2px solid var(--gold);outline-offset:2px}
+.type .ico{font-size:26px;display:block;margin-bottom:6px}
+.type .nm{display:block;font-family:Oswald,Impact,sans-serif;font-size:20px;text-transform:uppercase;letter-spacing:.5px}
+.type .pr{display:block;font-size:12px;color:var(--gold2);margin-top:2px}
+.field label.check{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:#c3c3c3;line-height:1.6;margin:6px 0 4px;text-transform:none;letter-spacing:0;font-weight:400}
+.check input{margin-top:4px;width:18px;height:18px;accent-color:#d8ad4b;flex-shrink:0}
+.submit{width:100%;border:0;cursor:pointer;font:inherit;font-size:13px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;padding:16px;border-radius:6px;background:var(--gold);color:#111;display:block;text-align:center}
+.submit:hover{filter:brightness(1.07)}
+.submit:disabled{opacity:.55;cursor:wait}
+.ghost{background:transparent;color:var(--gold2);border:1px solid #6d5425}
+.formmsg{display:none;margin-top:14px;padding:12px 14px;border-radius:7px;font-size:13px;line-height:1.6;background:rgba(227,90,99,.12);border:1px solid #7a2a30;color:#ffb3b8}
+.formmsg.show{display:block}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.done{display:none;text-align:center;padding:10px 4px}
+.tick{width:64px;height:64px;margin:0 auto 16px;border-radius:50%;border:2px solid var(--gold);display:grid;place-items:center;font-size:30px;color:var(--gold2)}
+.done p,.state p{color:#bbb;font-size:14px;line-height:1.8;margin:0 0 10px}
+.idbox{margin:18px auto;max-width:360px;background:#0e0e0e;border:1px dashed #5a4a26;border-radius:10px;padding:16px}
+.idbox .k,.paybox .k{font-size:9px;letter-spacing:2px;color:#999;text-transform:uppercase}
+.idbox b{display:block;font-family:Oswald,Impact,sans-serif;font-size:38px;letter-spacing:3px;color:var(--gold2);margin:4px 0 10px}
+.copybtn{background:transparent;color:var(--gold2);border:1px solid #6d5425;border-radius:6px;padding:9px 14px;font:inherit;font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;cursor:pointer}
+.copybtn:hover{background:rgba(216,173,75,.12)}
+.warn{font-size:12px;color:#ddd;background:rgba(216,173,75,.09);border-left:3px solid var(--gold);padding:10px 14px;text-align:left;border-radius:4px;line-height:1.7;margin:14px 0}
+.state{display:none}
+.badge2{display:inline-block;padding:6px 12px;border-radius:99px;font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:14px}
+.b-wait{background:rgba(216,173,75,.14);color:var(--gold2);border:1px solid #6d5425}
+.b-ok{background:rgba(70,180,110,.14);color:#7fe0a3;border:1px solid #2d6b45}
+.b-no{background:rgba(227,90,99,.12);color:#ff9aa1;border:1px solid #7a2a30}
+.who{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;background:#0e0e0e;border:1px solid #292929;border-radius:9px;padding:14px 16px;margin-bottom:16px;font-size:13px}
+.who span{color:#888;display:block;font-size:9px;letter-spacing:1.6px;text-transform:uppercase;margin-bottom:2px}
+.paybox{background:#0e0e0e;border:1px dashed #5a4a26;border-radius:10px;padding:18px;margin:6px 0 22px}
+.fee{font-family:Oswald,Impact,sans-serif;font-size:56px;line-height:1.05;color:var(--gold2);margin:2px 0 12px}
+.fee small{font-size:20px;color:#bbb;margin-left:6px}
+.paynum{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid #2a2a2a;padding-top:14px}
+.paynum b{font-family:Oswald,Impact,sans-serif;font-size:26px;letter-spacing:1px}
+.paynote{margin:12px 0 0;font-size:12px;color:#999;line-height:1.7}
+.paynote strong{color:#ddd}
+.sum{margin:16px 0 0;background:#0e0e0e;border:1px solid #292929;border-radius:9px;padding:14px 16px;font-size:13px}
+.sum div{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid #222}
+.sum div:last-child{border-bottom:0}
+.sum span{color:#888}
+@media(max-width:600px){.row2,.flow{grid-template-columns:1fr}.fee{font-size:48px}.idbox b{font-size:32px}}
+</style>
+<link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/></head>
+<body>
+<header class="nav"><div class="navin"><a class="brand" href="index.html"><img alt="MFL" class="brand-logo" src="assets/mfl-logo.png"/><span><b>MOSJIDPARA</b><small>FOOTBALL LEAGUE • OFFICIAL</small></span></a><button aria-label="Menu" class="menu">☰</button><nav class="links"><a data-bn="হোম" href="index.html">Home</a><a data-bn="টিম" href="teams.html">Team</a><a data-bn="সূচি" href="schedule.html">Schedule</a><a data-bn="ফলাফল" href="results.html">Result</a><a data-bn="আপডেট" href="updates.html">Updates</a><a data-bn="আমাদের সম্পর্কে" href="about.html">About</a></nav><a class="enroll" href="register.html"><span data-bn="রেজিস্ট্রেশন করুন">Register Now</span><svg aria-hidden="true" class="arr" height="22" viewbox="0 0 24 24" width="22"><circle cx="12" cy="12" fill="#1a1205" r="12"></circle><path d="M7 12h9M12.5 7.5L17 12l-4.5 4.5" fill="none" stroke="#f3cf72" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></a></div></header>
+<main>
+<section class="section"><div class="wrap">
+<div class="eyebrow" data-tag="STATUS" id="season-tag">STATUS</div>
+<h2 data-bn="স্ট্যাটাস &lt;span&gt;ও পেমেন্ট&lt;/span&gt;">Status <span>&amp; Payment</span></h2>
+<p class="lead" data-bn="আপনার অ্যাপ্লিকেশন আইডি আর আবেদনের সময় দেওয়া ফোন নম্বর লিখুন। ম্যানেজমেন্ট টিম অনুমোদন দিলে এখানে পেমেন্টের অপশন খুলবে।">Enter your Application ID and the phone number you applied with. If the management team has approved you, the payment option will open here.</p>
+<div class="regwrap panel">
+<div id="lookup">
+<form id="lookform" novalidate="">
+<div class="field" data-f="id">
+<label data-bn="অ্যাপ্লিকেশন আইডি &lt;i&gt;*&lt;/i&gt;" for="appid">Application ID <i>*</i></label>
+<input autocapitalize="characters" autocomplete="off" id="appid" maxlength="12" placeholder="e.g. MFL-7K3Q9" type="text"/>
+<div class="err" data-bn="আপনার অ্যাপ্লিকেশন আইডি লিখুন।">Enter your Application ID.</div>
+</div>
+<div class="field" data-f="phone">
+<label data-bn="ফোন নম্বর &lt;i&gt;*&lt;/i&gt;" for="lphone">Phone number <i>*</i></label>
+<input autocomplete="tel" id="lphone" inputmode="numeric" placeholder="01XXXXXXXXX" type="tel"/>
+<div class="err" data-bn="আবেদনের সময় দেওয়া ফোন নম্বর লিখুন।">Enter the phone number you applied with.</div>
+</div>
+<button class="submit" data-bn="স্ট্যাটাস দেখুন" id="lookbtn" type="submit">Check status</button>
+<div class="formmsg" id="lookmsg" role="alert"></div>
+</form>
+<p class="paynote" data-bn='এখনো আবেদন করেননি? &lt;a href="register.html" style="color:var(--gold2);text-decoration:underline"&gt;এখানে আবেদন করুন&lt;/a&gt;।' style="margin-top:18px">Have not applied yet? <a href="register.html" style="color:var(--gold2);text-decoration:underline">Apply here</a>.</p>
+</div>
+<div class="state" id="st-result">
+<div class="who"><div><span data-bn="নাম">Name</span><b id="r-name"></b></div><div><span data-bn="ধরন">Type</span><b id="r-type"></b></div><div><span data-bn="আইডি">ID</span><b id="r-id"></b></div></div>
+<div id="st-pending">
+<span class="badge2 b-wait" data-bn="যাচাই চলছে">Under review</span>
+<p data-bn="আপনার আবেদন যাচাই করা হচ্ছে। ম্যানেজমেন্ট টিম তথ্য মেলাতে ফোন করবে। অনুমোদন পেলে এখানে পেমেন্ট খুলবে।">Your application is being reviewed. Our management team will call you to check your details. Payment opens here once you are approved.</p>
+</div>
+<div id="st-rejected">
+<span class="badge2 b-no" data-bn="অনুমোদন হয়নি">Not approved</span>
+<p data-bn="আপনার আবেদন অনুমোদন হয়নি। ভুল হয়েছে মনে হলে আয়োজকদের সঙ্গে যোগাযোগ করুন।">Your application was not approved. If you think this is a mistake, please contact the organisers.</p>
+</div>
+<div id="st-approved">
+<span class="badge2 b-ok" data-bn="অনুমোদিত">Approved</span>
+<p data-bn="সুখবর, আপনি অনুমোদিত। নিচে ফি দিয়ে TrxID জমা দিন, তাহলেই রেজিস্ট্রেশন সম্পূর্ণ হবে।">Good news, you are approved. Pay the fee below and submit your TrxID to complete your registration.</p>
+<form id="payform" novalidate="">
+<div class="paybox">
+<div class="k" data-bn="পরিশোধযোগ্য টাকা">Amount to pay</div>
+<div class="fee" id="r-fee"></div>
+<div class="paynum">
+<div><div class="k" data-bn="bKash বা Nagad · Send Money">bKash or Nagad · Send Money</div><b id="r-bkash"></b></div>
+<button class="copybtn" data-bn="কপি" id="copybk" type="button">Copy</button>
+</div>
+<p class="paynote" data-bn="উপরের টাকা এই নম্বরে &lt;strong&gt;Send Money&lt;/strong&gt; করুন, &lt;strong&gt;bKash বা Nagad&lt;/strong&gt; দিয়ে। তারপর SMS থেকে &lt;strong&gt;TrxID&lt;/strong&gt; কপি করুন। শুধু এখানে দেখানো নম্বরেই টাকা পাঠান।">Send the amount above by <strong>Send Money</strong> to this number with <strong>bKash or Nagad</strong>, then copy the <strong>TrxID</strong> from the SMS. Only pay to the number shown here.</p>
+</div>
+<div class="field" data-f="method">
+<span class="lbl" data-bn="যে মাধ্যমে দিয়েছেন &lt;i&gt;*&lt;/i&gt;" id="m-lbl">You paid with <i>*</i></span>
+<div aria-labelledby="m-lbl" class="types" role="radiogroup">
+<label class="type"><input name="method" type="radio" value="bKash"/><span class="card"><span class="nm">bKash</span></span></label>
+<label class="type"><input name="method" type="radio" value="Nagad"/><span class="card"><span class="nm">Nagad</span></span></label>
+</div>
+<div class="err" data-bn="bKash বা Nagad বেছে নিন।">Choose bKash or Nagad.</div>
+</div>
+<div class="row2">
+<div class="field" data-f="sender">
+<label data-bn="যে নম্বর থেকে টাকা পাঠিয়েছেন &lt;i&gt;*&lt;/i&gt;" for="sender">Number you paid from <i>*</i></label>
+<input id="sender" inputmode="numeric" placeholder="01XXXXXXXXX" type="tel"/>
+<div class="err" data-bn="যে নম্বর থেকে টাকা পাঠিয়েছেন সেটি লিখুন।">Enter the number you sent money from.</div>
+</div>
+<div class="field" data-f="trx">
+<label for="trx">TrxID <i>*</i></label>
+<input autocapitalize="characters" autocomplete="off" id="trx" maxlength="14" placeholder="e.g. 9A1B2C3D4E" type="text"/>
+<div class="err" data-bn="TrxID লিখুন (৬ থেকে ১৪টি অক্ষর ও সংখ্যা)।">Enter the TrxID (6 to 14 letters and numbers).</div>
+</div>
+</div>
+<button class="submit" data-bn="পেমেন্ট জমা দিন" id="paybtn" type="submit">Submit payment</button>
+<div class="formmsg" id="paymsg" role="alert"></div>
+</form>
+</div>
+<div id="st-paid">
+<span class="badge2 b-wait" data-bn="পেমেন্ট পাওয়া গেছে">Payment received</span>
+<p data-bn="আমরা আপনার TrxID পেয়েছি। কমিটি bKash পেমেন্টের সঙ্গে মিলিয়ে দেখছে। শিগগিরই আপনি নিশ্চিত হবেন।">We received your TrxID. The committee is checking it against the bKash payment. You will be confirmed soon.</p>
+</div>
+<div id="st-confirmed">
+<span class="badge2 b-ok" data-bn="নিশ্চিত">Confirmed</span>
+<p data-bn="আপনার রেজিস্ট্রেশন নিশ্চিত হয়েছে। MFL-এ স্বাগতম!">Your registration is confirmed. Welcome to MFL!</p>
+</div>
+<button class="submit ghost" data-bn="অন্য আইডি দেখুন" id="again" style="margin-top:18px" type="button">Check another ID</button>
+</div>
+</div>
+</div></section>
+</main>
+<footer><div class="wrap footerin"><div><b>MFL</b><p data-bn="© ২০২৬ মসজিদপাড়া ফুটবল লিগ — MFL">© 2026 MosjidPara Football League — MFL</p></div><div><p data-bn="বাগানবাড়ি উজ্জ্বল মাঠ, মসজিদপাড়া, পঞ্চগড়">BaganBari Ujjwal Ground, Mosjidpara, Panchagarh</p><a class="social" data-bn="ফেসবুক পেজ ↗" href="https://www.facebook.com/share/1CgdDE5JKB/" rel="noopener" target="_blank">Facebook Page ↗</a><p class="flinks"><a data-bn="নিয়মাবলি" href="rules.html">Rules</a><a data-bn="সাধারণ প্রশ্ন (FAQ)" href="faq.html">FAQ</a><a data-bn="যোগাযোগ ও গোপনীয়তা" href="contact.html">Contact &amp; Privacy</a></p><p class="flinks" data-contact="" style="margin-top:6px"></p><p class="flinks" style="margin-top:12px"><button aria-label="Language / ভাষা" class="lang" id="langbtn" type="button">বাংলা</button></p></div></div></footer>
+<script src="script.js"></script><script src="i18n.js"></script>
+<script src="config.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const phoneRe = /^(?:\+?88)?01[3-9]\d{8}$/;
+const cleanPhone = v => v.replace(/[\s-]/g, "");
+const lookform = $("lookform"), payform = $("payform");
+let cur = { id: "", phone: "", bkash: "" };
+
+function setBad(form, name, bad) { form.querySelector('[data-f="' + name + '"]').classList.toggle("bad", bad); return bad; }
+function msg(id, t) { const m = $(id); m.textContent = t; m.classList.toggle("show", !!t); }
+async function call(payload) {
+  const res = await fetch(CONFIG.scriptUrl, { method: "POST", body: JSON.stringify(payload) });
+  return res.json();
+}
+async function copyText(text, btn, label) {
+  try { await navigator.clipboard.writeText(text); }
+  catch (e) {
+    const t = document.createElement("textarea"); t.value = text; document.body.appendChild(t); t.select();
+    try { document.execCommand("copy"); } catch (_) {}
+    t.remove();
+  }
+  btn.textContent = t("Copied"); setTimeout(() => btn.textContent = label, 1600);
+}
+payform.querySelectorAll('input[name="method"]').forEach(r => r.addEventListener("change", () => setBad(payform, "method", false)));
+$("copybk").addEventListener("click", () => copyText(cur.bkash, $("copybk"), t("Copy")));
+
+function show(status, d) {
+  ["pending", "rejected", "approved", "paid", "confirmed"].forEach(k => $("st-" + k).style.display = "none");
+  const map = { "Pending": "pending", "Rejected": "rejected", "Approved": "approved", "Payment submitted": "paid", "Confirmed": "confirmed" };
+  const key = map[status] || "pending";
+  $("st-" + key).style.display = "block";
+  $("r-name").textContent = d.name; $("r-type").textContent = d.type; $("r-id").textContent = cur.id;
+  if (key === "approved") {
+    cur.bkash = d.number || "";
+    $("r-fee").innerHTML = "৳" + d.amount + "<small>BDT</small>";
+    $("r-bkash").textContent = d.number || "";
+  }
+  $("lookup").style.display = "none";
+  $("st-result").style.display = "block";
+}
+
+lookform.addEventListener("submit", async e => {
+  e.preventDefault(); msg("lookmsg", "");
+  const id = $("appid").value.trim().toUpperCase(), phone = cleanPhone($("lphone").value);
+  let bad = false;
+  bad = setBad(lookform, "id", id.length < 5) || bad;
+  bad = setBad(lookform, "phone", !phoneRe.test(phone)) || bad;
+  if (bad) return;
+  if (!CONFIG.scriptUrl) { msg("lookmsg", t("This page is not open yet. Please contact the organisers.")); return; }
+  const btn = $("lookbtn"); btn.disabled = true; btn.textContent = t("Checking…");
+  try {
+    const out = await call({ action: "status", id, phone });
+    if (out.ok) { cur.id = id; cur.phone = phone; show(out.status, out); }
+    else if (out.error === "notfound") msg("lookmsg", t("No application found for this ID and phone number. Check both and try again."));
+    else msg("lookmsg", t("Something went wrong. Please try again in a moment."));
+  } catch (err) {
+    msg("lookmsg", t("Could not connect. Check your internet connection and try again."));
+  }
+  btn.disabled = false; btn.textContent = t("Check status");
+});
+
+payform.addEventListener("submit", async e => {
+  e.preventDefault(); msg("paymsg", "");
+  const sender = cleanPhone($("sender").value), trx = $("trx").value.trim().toUpperCase();
+  const mEl = payform.querySelector('input[name="method"]:checked'), method = mEl ? mEl.value : "";
+  let bad = false;
+  bad = setBad(payform, "method", !method) || bad;
+  bad = setBad(payform, "sender", !phoneRe.test(sender)) || bad;
+  bad = setBad(payform, "trx", !/^[A-Z0-9]{6,14}$/.test(trx)) || bad;
+  if (bad) return;
+  const btn = $("paybtn"); btn.disabled = true; btn.textContent = t("Submitting…");
+  try {
+    const out = await call({ action: "pay", id: cur.id, phone: cur.phone, method, sender, trx });
+    if (out.ok) { show("Payment submitted", { name: $("r-name").textContent, type: $("r-type").textContent }); btn.disabled = false; btn.textContent = t("Submit payment"); return; }
+    if (out.error === "duplicate") msg("paymsg", t("This TrxID has already been used. Check the number, or contact the organisers."));
+    else if (out.error === "notallowed") msg("paymsg", t("Payment is not open for this application. Refresh your status."));
+    else msg("paymsg", t("Something went wrong. Please try again in a moment."));
+  } catch (err) {
+    msg("paymsg", t("Could not send your payment details. Check your internet connection and try again."));
+  }
+  btn.disabled = false; btn.textContent = t("Submit payment");
+});
+
+$("again").addEventListener("click", () => {
+  $("st-result").style.display = "none"; $("lookup").style.display = "block";
+  $("appid").value = ""; $("lphone").value = "";
+});
+</script>
+</body>
+</html>
