@@ -669,3 +669,41 @@ body.sponsor-modal-open{overflow:hidden}
  .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
  .archive-card h2{font-size:32px}
 }
+
+/* ===== Digital Player ID — full-bleed card (design B) ===== */
+.idb-wrap{display:flex;justify-content:center;margin:28px 0 10px}
+.idb{width:min(390px,100%);padding:10px 10px 6px;border-radius:36px;background:#0a0a0a;border:1px solid rgba(216,173,75,.5);box-shadow:0 30px 70px rgba(0,0,0,.6),0 0 70px rgba(142,7,16,.32)}
+.idb-in{position:relative;border-radius:27px;overflow:hidden;background:#090909;isolation:isolate;display:flex;flex-direction:column}
+.idb-photo{position:relative;flex:0 0 auto;width:100%;aspect-ratio:1/1.38;overflow:hidden}
+.idb-photo:before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(to bottom,rgba(0,0,0,.32) 0%,rgba(0,0,0,0) 22%)}
+.idb-photo:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:calc(46% + 1px);z-index:2;pointer-events:none;background:linear-gradient(to bottom,rgba(9,9,9,0) 0%,rgba(9,9,9,.55) 38%,rgba(9,9,9,.92) 70%,#090909 88%,#090909 100%)}
+.idb-photo>img{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;object-position:50% 0;display:none}
+.idb-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(90% 60% at 50% 30%,#3a0d13,#120709 70%)}
+.idb-ph img{position:absolute;width:62%;top:16%;opacity:.28}
+.idb-ph span{position:relative;font-family:Oswald,Impact,sans-serif;font-size:150px;font-weight:700;color:rgba(243,207,114,.9);margin-top:-60px}
+.idb-top{position:absolute;z-index:3;top:14px;left:16px;right:16px;display:flex;align-items:center;justify-content:space-between}
+.idb-logo{height:42px;width:auto;filter:drop-shadow(0 4px 10px rgba(0,0,0,.5))}
+.idb-pid{font-size:10px;font-weight:800;letter-spacing:1.6px;color:var(--gold2);padding:8px 12px;border-radius:99px;background:rgba(8,8,8,.55);border:1px solid rgba(216,173,75,.45);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.idb-body{position:relative;z-index:3;margin-top:-86px;padding:0 20px 20px;background:radial-gradient(120% 52% at 50% 100%,rgba(142,7,16,.42),transparent 72%)}
+.idb-roles{display:flex;gap:6px;flex-wrap:wrap}
+.idb-roles .role-badge{opacity:1;color:#f6d983;font-size:9px;padding:6px 10px;background:rgba(216,173,75,.18);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.idb .idb-name{display:block;font-family:Oswald,'Arial Narrow',Impact,sans-serif;font-size:clamp(23px,7vw,30px);font-weight:700;line-height:1.12;letter-spacing:.5px;text-transform:uppercase;margin:10px 0 5px;color:#fff}
+.idb .idb-name span{color:#fff}
+.idb-ok{display:inline-block;width:22px;height:22px;margin-left:8px;vertical-align:-3px}
+.idb-sub{margin:0 0 14px;font-size:13px;color:rgba(255,255,255,.78)}
+.idb-sub b{color:var(--gold2)}
+.idb-stats{display:grid;grid-template-columns:repeat(3,1fr);margin-bottom:16px}
+.idb-stats div{text-align:center;padding:2px 4px}
+.idb-stats div+div{border-left:1px solid rgba(255,255,255,.18)}
+.idb-stats b{display:block;font-family:Oswald,Impact,sans-serif;font-size:27px;line-height:1.1;color:var(--gold2)}
+.idb-stats span{display:block;margin-top:3px;font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:rgba(255,255,255,.6)}
+.idb-actions{display:flex;gap:10px;align-items:center}
+.idb-main{flex:1;height:52px;border-radius:99px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;letter-spacing:1.4px;text-transform:uppercase;color:#1a1205;background:linear-gradient(135deg,#f6d983,#d8ad4b);box-shadow:0 8px 22px rgba(216,173,75,.28)}
+.idb-ic{width:52px;height:52px;flex:0 0 auto;border-radius:50%;display:grid;place-items:center;color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.idb-main:active,.idb-ic:active{transform:scale(.96)}
+.idb-foot{text-align:center;font-size:8.5px;letter-spacing:3.2px;color:rgba(216,173,75,.8);padding:10px 0 4px;font-weight:700}
+.idb-toast{position:fixed;left:50%;bottom:96px;transform:translate(-50%,14px);opacity:0;pointer-events:none;background:#f3cf72;color:#1a1205;font-weight:800;font-size:12px;padding:10px 16px;border-radius:99px;transition:.25s;z-index:80}
+.idb-toast.on{opacity:1;transform:translate(-50%,0)}
+@media print{.nav,footer,.bnav,.id-note,.idb-actions,.idb-toast,.btn{display:none!important}body{background:#fff!important}body:before,body:after{display:none!important}.idb{box-shadow:none;margin:0 auto}}
+
+.idb .idb-name .idb-last{white-space:nowrap;color:#fff}
