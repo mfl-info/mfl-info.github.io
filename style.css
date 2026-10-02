@@ -1,5 +1,5 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap');
 :root{--red:#8e0710;--red2:#c41622;--dark:#090909;--gold:#d8ad4b;--gold2:#f2d37b;--cream:#f7f2e8;--muted:#9b9b9b;--line:#2a2a2a}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#080808;color:#f7f7f7;font-family:Inter,Arial,sans-serif}a{text-decoration:none;color:inherit}
 body:before{content:"";position:fixed;inset:0;background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.78)),url('assets/red-texture-1.png') center/cover;z-index:-2}
@@ -118,7 +118,7 @@ footer{font-size:12px}
 .top-3{order:3}
 .top-medal{font-size:28px;line-height:1.1;margin-bottom:7px}
 .top-rank{font-size:10px;letter-spacing:2px;color:#88a1b5}
-.top-name{font-size:22px;font-weight:900;letter-spacing:1px;color:#fff;margin:5px 0}
+.top-name{font-family:"Bebas Neue",Oswald,Impact,sans-serif;font-size:25px;font-weight:400;letter-spacing:1.3px;line-height:1;color:#fff;margin:6px 0;text-transform:uppercase}
 .top-goals{font:900 27px Oswald,Arial,sans-serif;color:#f3d47a}
 .top-goals span{font:700 9px Oswald,Arial,sans-serif;letter-spacing:1.5px;color:#b7c8d5}
 .top-status{font-size:9px;letter-spacing:1.5px;color:#8fa9bb;margin-top:6px}
@@ -129,7 +129,7 @@ footer{font-size:12px}
   .top-1{transform:translateY(-7px)}
   .top-medal{font-size:20px;margin:0 0 3px}
   .top-rank{font-size:7px;letter-spacing:1px}
-  .top-name{font-size:13px;letter-spacing:.5px;margin:3px 0}
+  .top-name{font-size:17px;letter-spacing:.8px;margin:4px 0}
   .top-goals{font-size:18px;line-height:1.05}
   .top-goals span{display:block;font-size:6px;letter-spacing:1px;margin-top:2px}
   .top-status{font-size:6px;letter-spacing:.5px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -172,7 +172,7 @@ footer{font-size:12px}
 .regular-list{display:grid;gap:8px;margin-top:16px}
 .leader-row{display:grid;grid-template-columns:44px minmax(110px,180px) minmax(120px,1fr) 52px;align-items:center;gap:14px;background:rgba(13,34,55,.78);border:1px solid #1b3852;border-radius:8px;padding:12px 16px;min-height:52px;box-sizing:border-box}
 .leader-rank{font:800 18px Oswald,Arial,sans-serif;color:#f3d47a;text-align:center}
-.leader-name{font:800 15px Oswald,Arial,sans-serif;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.leader-name{font:400 18px "Bebas Neue",Oswald,Impact,sans-serif;letter-spacing:1px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:uppercase}
 .leader-bar{height:7px;background:#182b3c;border-radius:999px;overflow:hidden;border:1px solid #203d56}
 .leader-fill{height:100%;background:linear-gradient(90deg,#d8ad4b,#f3d47a);border-radius:999px;min-width:4px}
 .leader-goals{font:900 20px Oswald,Arial,sans-serif;color:#f3d47a;text-align:right}
@@ -181,7 +181,7 @@ footer{font-size:12px}
   .regular-list{gap:6px}
   .leader-row{grid-template-columns:28px minmax(70px,1fr) minmax(45px,1fr) 30px;gap:7px;padding:10px 9px;min-height:45px}
   .leader-rank{font-size:14px}
-  .leader-name{font-size:12px}
+  .leader-name{font-size:15px;letter-spacing:.7px}
   .leader-bar{height:5px}
   .leader-goals{font-size:16px}
   .regular-section h2{font-size:24px}
@@ -600,6 +600,20 @@ body.sponsor-modal-open{overflow:hidden}
   .bnav-i.home-center .bnav-ic{position:absolute !important;left:50% !important;top:-26px !important;margin:0 !important;transform:translateX(-50%) !important}
 }
 
+/* ===== Points Table — mobile stacked groups ===== */
+@media(max-width:700px){
+  .points-grid{grid-template-columns:1fr !important;gap:14px !important}
+  .points-card{width:100%;padding:0 !important;overflow:hidden}
+  .points-title{padding:13px 14px !important;font-size:12px}
+  .points-scroll{overflow-x:auto !important;-webkit-overflow-scrolling:touch}
+  .points-scroll .standings{min-width:0 !important;width:100%;table-layout:fixed}
+  .points-scroll .standings th,.points-scroll .standings td{padding:7px 3px !important;font-size:9px !important;white-space:nowrap !important}
+  .points-scroll .standings th{font-size:8px !important;letter-spacing:.2px !important}
+  .points-scroll .standings th:nth-child(1),.points-scroll .standings td:nth-child(1){width:8%}
+  .points-scroll .standings th:nth-child(2),.points-scroll .standings td:nth-child(2){width:32%;overflow:hidden;text-overflow:ellipsis}
+  .points-scroll .standings th:nth-child(n+3),.points-scroll .standings td:nth-child(n+3){width:6.67%}
+}
+
 /* ===== MFL CENTER / TOURNAMENT TOOLS ===== */
 .feature-hero{padding-top:55px}.feature-hero h1{font-size:clamp(42px,7vw,76px);margin:8px 0 14px}.feature-hero h1 span,.section h1 span{color:var(--gold2)}
 .feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:30px}
@@ -610,7 +624,7 @@ body.sponsor-modal-open{overflow:hidden}
 .h2h-select{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin:25px 0}.h2h-select select{padding:14px;border-radius:14px;border:1px solid rgba(216,173,75,.28);background:#151014;color:#fff}.compare-head{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:center;text-align:center;font-size:25px;color:var(--gold2)}
 .record-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin:25px 0}.record-card{padding:22px;border:1px solid rgba(216,173,75,.2);border-radius:18px;background:rgba(255,255,255,.035)}.record-card h2{font-size:25px;margin:8px 0}.record-card p{margin:0;color:rgba(255,255,255,.58);font-size:12px}
 .archive-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:25px}.archive-card{padding:24px;border-radius:20px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.035)}.archive-card.featured{border-color:rgba(216,173,75,.4);background:linear-gradient(145deg,rgba(216,173,75,.09),rgba(255,255,255,.025))}.archive-card h2{margin:8px 0}.archive-card p{color:rgba(255,255,255,.6);font-size:12px;min-height:36px}
-.gallery-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:25px 0}.gallery-grid figure{margin:0;border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:#111}.gallery-grid img{display:block;width:100%;height:210px;object-fit:cover}.gallery-grid figcaption{padding:11px 13px;font-size:11px;color:rgba(255,255,255,.68)}
+.gallery-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:25px 0}.gallery-grid figure{margin:0;border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:#111}.gallery-grid img{display:block;width:100%;height:auto;aspect-ratio:auto;object-fit:contain;background:#111}.gallery-grid figcaption{padding:11px 13px;font-size:11px;color:rgba(255,255,255,.68)}
 .video-empty{text-align:center;padding:60px 20px;border:1px dashed rgba(216,173,75,.3);border-radius:22px}.play{width:70px;height:70px;border-radius:50%;display:grid;place-items:center;margin:0 auto 16px;background:#f3cf72;color:#1a1205;font-size:26px;padding-left:4px}.hof-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:28px}.hof-card{text-align:center;padding:30px 20px;border-radius:20px;border:1px solid rgba(216,173,75,.25);background:linear-gradient(145deg,rgba(216,173,75,.08),rgba(255,255,255,.025))}.hof-cup{font-size:45px}.hof-card h2{margin:8px 0}.hof-card p{margin:0;color:rgba(255,255,255,.6)}
 .digital-id{width:min(520px,100%);margin:25px auto;padding:30px;border-radius:25px;border:1px solid rgba(216,173,75,.55);background:linear-gradient(145deg,#221016,#09090b);box-shadow:0 20px 50px rgba(0,0,0,.35);text-align:center;position:relative;overflow:hidden}.id-logo img{width:68px;height:68px;object-fit:contain}.digital-id h2{font-size:32px;margin:8px 0 18px}.id-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.id-meta span{padding:12px 8px;border-radius:12px;background:rgba(255,255,255,.05);font-size:9px;text-transform:uppercase;letter-spacing:.7px;color:rgba(255,255,255,.5)}.id-meta b{display:block;color:#fff;font-size:12px;margin-top:5px}.id-footer{margin-top:24px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08);font-size:9px;letter-spacing:1.3px;color:var(--gold2)}.id-note{max-width:600px;margin:0 auto 18px;text-align:center}
 @media(max-width:900px){.feature-grid,.archive-grid,.gallery-grid{grid-template-columns:1fr 1fr}.record-grid{grid-template-columns:1fr 1fr}.player-grid,.hof-grid{grid-template-columns:1fr}.live-grid{grid-template-columns:1fr}.feature-hero{padding-top:35px}}
@@ -707,3 +721,21 @@ body.sponsor-modal-open{overflow:hidden}
 @media print{.nav,footer,.bnav,.id-note,.idb-actions,.idb-toast,.btn{display:none!important}body{background:#fff!important}body:before,body:after{display:none!important}.idb{box-shadow:none;margin:0 auto}}
 
 .idb .idb-name .idb-last{white-space:nowrap;color:#fff}
+
+.scorer-player-link{color:inherit;text-decoration:none;cursor:pointer;transition:color .18s ease,text-shadow .18s ease}
+.scorer-player-link:hover{color:var(--gold2);text-shadow:0 0 12px rgba(216,173,75,.35)}
+.scorer-player-link:focus-visible{outline:2px solid var(--gold2);outline-offset:3px;border-radius:4px}
+
+/* FINAL MOBILE POINTS TABLE OVERRIDE */
+@media(max-width:700px){
+  .points-grid{grid-template-columns:1fr !important;gap:14px !important}
+  .points-card{width:100% !important;padding:0 !important;overflow:hidden}
+  .points-title{padding:13px 14px !important;font-size:12px !important}
+  .points-scroll{overflow-x:auto !important;-webkit-overflow-scrolling:touch}
+  .points-scroll .standings{min-width:0 !important;width:100% !important;table-layout:fixed}
+  .points-scroll .standings th,.points-scroll .standings td{padding:7px 3px !important;font-size:9px !important;white-space:nowrap !important}
+  .points-scroll .standings th{font-size:8px !important;letter-spacing:.2px !important}
+  .points-scroll .standings th:nth-child(1),.points-scroll .standings td:nth-child(1){width:8%}
+  .points-scroll .standings th:nth-child(2),.points-scroll .standings td:nth-child(2){width:32%;overflow:hidden;text-overflow:ellipsis}
+  .points-scroll .standings th:nth-child(n+3),.points-scroll .standings td:nth-child(n+3){width:6.67%}
+}

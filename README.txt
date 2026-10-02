@@ -31,3 +31,7 @@ LOGO ANIMATION
 - The logo (top bar and Home hero) plays a 7-second loop: hold, light flash, shrink to a point, burst back. It is in style.css (search "logoloop"). To stop it, delete the line starting ".logo-anim,.brand-logo{animation:...". It is turned off automatically for visitors who set "reduce motion" on their phone.
 
 Player Profiles: Season 6 lists all 56 squad nicknames. Opening a profile card shows both the player's full name and nickname.
+
+PLAYER CARDS
+- A player card link carries ONLY the player id, e.g. id.html?pid=MFL-S6-001. Name, goals, roles and team are read from the players list in mfl-data.js, so a link cannot be edited to show made-up details.
+- To add or change a player, edit the "players" list in mfl-data.js. Photos go in assets/players/<playerId>.jpg.
