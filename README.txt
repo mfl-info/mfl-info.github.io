@@ -47,3 +47,12 @@ MOBILE BOTTOM NAVIGATION (phones and tablets up to 900 px wide; desktop is not c
 
 LEADERBOARD FONT
 - Player names, ranks and goals on scorer.html use the Anton font (loaded from Google Fonts on that page only). Fallback if it cannot load: Bebas Neue, Impact. To change the font, edit the "Leaderboard" block at the end of style.css and the Anton link in scorer.html.
+
+GALLERY (gallery.html)
+- SEASON LOGOS shows Season 6 (red background version), then Seasons 5, 4, 3, 2, 1. MFL MEDIA & SPONSORS keeps only the sponsors.
+- Season 6 on the Results page still uses assets/mfl-season6-main-transparent.png (transparent logo).
+- Season logos are WebP files in assets/ (mfl-season1-logo.webp ... mfl-season5-logo.webp).
+
+GOOGLE SEARCH
+- Every page has a canonical link, sitemap.xml lists all pages, robots.txt allows search engines.
+- In Google Search Console (search.google.com/search-console) add https://mfl-info.github.io/ with the "HTML tag" method, then paste your code in index.html where it says PASTE_CODE_HERE (and remove the comment marks), upload, and press Verify. Then submit https://mfl-info.github.io/sitemap.xml

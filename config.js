@@ -9,5 +9,5 @@ const CONFIG = {
   fees:      { Player: 280, Goalkeeper: 280, Captain: 700 },
   capacity:  { Captain: 8, Player: 40, Goalkeeper: 8, Total: 56 },    // shown on the form. Keep same as the Apps Script FEES.
   opensAt:   "2026-12-16T00:00:00+06:00",     // registration opens: 16 Dec 2026, 12:00 AM Bangladesh time
-  scriptUrl: "https://script.google.com/macros/s/AKfycbybcnVbF76C9yMZ_s9HZsXKYlXdM8XX19gTniE_cIrIVWBhz5ff361RPqGM-9ZvrSDc/exec"                                // Google Apps Script Web app URL (see setup guide)
+  scriptUrl: "https://script.google.com/macros/s/AKfycbxwNvRzBFlhpMwQAxnv9lXo_TWLGBNlSh7kB9EPyEUdRdbkUmu_wA2E7ZzbF1I7uVy5/exec"                                // Google Apps Script Web app URL (see setup guide)
 };

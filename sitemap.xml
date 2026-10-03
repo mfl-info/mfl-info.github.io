@@ -1,34 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://mfl-info.github.io/index.html</loc></url>
-  <url><loc>https://mfl-info.github.io/teams.html</loc></url>
-  <url><loc>https://mfl-info.github.io/schedule.html</loc></url>
-  <url><loc>https://mfl-info.github.io/results.html</loc></url>
-  <url><loc>https://mfl-info.github.io/updates.html</loc></url>
-  <url><loc>https://mfl-info.github.io/about.html</loc></url>
-  <url><loc>https://mfl-info.github.io/faq.html</loc></url>
-  <url><loc>https://mfl-info.github.io/contact.html</loc></url>
-  <url><loc>https://mfl-info.github.io/rules.html</loc></url>
-  <url><loc>https://mfl-info.github.io/register.html</loc></url>
-  <url><loc>https://mfl-info.github.io/status.html</loc></url>
-  <url><loc>https://mfl-info.github.io/points.html</loc></url>
-  <url><loc>https://mfl-info.github.io/scorer.html</loc></url>
-  <url><loc>https://mfl-info.github.io/awards.html</loc></url>
-  <url><loc>https://mfl-info.github.io/archive.html</loc></url>
-  <url><loc>https://mfl-info.github.io/season3.html</loc></url>
-  <url><loc>https://mfl-info.github.io/season4.html</loc></url>
-  <url><loc>https://mfl-info.github.io/season5.html</loc></url>
-  <url><loc>https://mfl-info.github.io/live.html</loc></url>
-  <url><loc>https://mfl-info.github.io/players.html</loc></url>
-  <url><loc>https://mfl-info.github.io/h2h.html</loc></url>
-  <url><loc>https://mfl-info.github.io/records.html</loc></url>
-  <url><loc>https://mfl-info.github.io/gallery.html</loc></url>
-  <url><loc>https://mfl-info.github.io/highlights.html</loc></url>
-  <url><loc>https://mfl-info.github.io/center.html</loc></url>
-  <url><loc>https://mfl-info.github.io/id.html</loc></url>
-  <url><loc>https://mfl-info.github.io/lottery.html</loc></url>
-  <url><loc>https://mfl-info.github.io/share-result.html</loc></url>
-  <url><loc>https://mfl-info.github.io/registration-dashboard.html</loc></url>
-  <url><loc>https://mfl-info.github.io/volunteer.html</loc></url>
-  <url><loc>https://mfl-info.github.io/poll.html</loc></url>
+<url><loc>https://mfl-info.github.io/about.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/archive.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/awards.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/center.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/contact.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/faq.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/gallery.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/h2h.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/hall-of-fame.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/highlights.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/id.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+<url><loc>https://mfl-info.github.io/live.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/lottery.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/players.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/points.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/poll.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/records.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/register.html</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+<url><loc>https://mfl-info.github.io/registration-dashboard.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/results.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/rules.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/schedule.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/scorer.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/season3.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/season4.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/season5.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/share-result.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/status.html</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
+<url><loc>https://mfl-info.github.io/team-1.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/team-2.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/team-3.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/team-4.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/team-5.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/team-6.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/team-7.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/team-8.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/teams.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/updates.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+<url><loc>https://mfl-info.github.io/volunteer.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
 </urlset>
