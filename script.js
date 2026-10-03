@@ -39,55 +39,33 @@ window.addEventListener('DOMContentLoaded',()=>{
   }
 });
 
-/* ===== Mobile bottom navigation (5 items). Shown only on phones via CSS; desktop is unchanged. ===== */
+/* ===== Mobile bottom navigation: Home is always the center button ===== */
 (function(){
-  var ICONS={
-    'index.html':'<path d="M12 3.2 4.6 8v8.6c0 1.2 1 2.2 2.2 2.2h10.4c1.2 0 2.2-1 2.2-2.2V8L12 3.2Z"/><path d="M9.4 14.2c.7.9 1.5 1.3 2.6 1.3s1.9-.4 2.6-1.3"/>',
-    'teams.html':'<circle cx="9" cy="8.5" r="3.2"/><path d="M3.2 19c.4-3.3 2.7-5.2 5.8-5.2s5.4 1.9 5.8 5.2"/><circle cx="17" cy="9.5" r="2.5"/><path d="M16.6 14c2.6.1 4.1 1.7 4.4 4.3"/>',
-    'schedule.html':'<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M8 14.2h2M13.5 14.2h2.5M8 17h2"/>',
-    'results.html':'<path d="M8 4h8v5a4 4 0 0 1-8 0V4Z"/><path d="M8 6H4.8v1.2A3.3 3.3 0 0 0 8 10.5M16 6h3.2v1.2a3.3 3.3 0 0 1-3.2 3.3"/><path d="M12 13v4M8.6 20h6.8M9.8 17h4.4"/>',
-    'about.html':'<circle cx="12" cy="12" r="8.6"/><path d="M12 11v5.4"/><circle cx="12" cy="7.8" r=".7" fill="currentColor"/>'
-  };
-  var order=['teams.html','schedule.html','index.html','results.html','about.html'];
-  var SHORT={'about.html':['About','সম্পর্কে']};
-  var nav=document.querySelector('.links'); if(!nav) return;
-  var src={}; nav.querySelectorAll('a').forEach(function(a){src[a.getAttribute('href')]=a;});
-  var file=(location.pathname.split('/').pop()||'index.html');
-  if(/^team-\d+\.html$/.test(file)) file='teams.html';
-  if(file==='scorer.html'||file==='awards.html') file='results.html';
-  var bar=document.createElement('nav'); bar.className='bnav'; bar.setAttribute('aria-label','Main');
-  var html='<div class="bnav-bar"></div><div class="bnav-items">';
-  order.forEach(function(h){
-    var a=src[h]; if(!a) return;
-    var on=(h===file);
-    html+='<a href="'+h+'" class="bnav-i'+(on?' on':'')+'"'+(on?' aria-current="page"':'')+'>'+
-      '<span class="bnav-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+ICONS[h]+'</svg></span>'+
-      '<span class="bnav-t"'+(SHORT[h]?' data-bn="'+SHORT[h][1]+'"':(a.getAttribute('data-bn')?' data-bn="'+a.getAttribute('data-bn')+'"':''))+'>'+(SHORT[h]?SHORT[h][0]:a.textContent)+'</span></a>';
-  });
-  bar.innerHTML=html+'</div>';
-  document.body.appendChild(bar);
-  function place(){
-    bar.classList.remove('none');
-    var active=bar.querySelector('.bnav-i.on');
-    if(!active) return;
-    var r=active.getBoundingClientRect();
-    var cx=r.left+(r.width/2);
-    bar.style.setProperty('--cx',cx+'px');
-  }
-  place();
-  window.addEventListener('resize',place);
-  window.addEventListener('orientationchange',function(){setTimeout(place,60)});
-  window.addEventListener('load',place);
-  /* Updates is not in the bottom bar, so give phones a link to it in the footer */
-  var fl=document.querySelector('footer .flinks');
-  if(fl&&!fl.querySelector('[href="updates.html"]')){
-    var up=nav.querySelector('a[href="updates.html"]');
-    var ab=document.createElement('a'); ab.href='updates.html'; ab.className='only-m';
-    ab.setAttribute('data-bn',up&&up.getAttribute('data-bn')?up.getAttribute('data-bn'):'আপডেট');
-    ab.textContent='Updates'; fl.insertBefore(ab,fl.firstChild);
-  }
+var ICONS={'index.html':'<path d="M12 3.2 4.6 8v8.6c0 1.2 1 2.2 2.2 2.2h10.4c1.2 0 2.2-1 2.2-2.2V8L12 3.2Z"/><path d="M9.4 14.2c.7.9 1.5 1.3 2.6 1.3s1.9-.4 2.6-1.3"/>','teams.html':'<circle cx="9" cy="8.5" r="3.2"/><path d="M3.2 19c.4-3.3 2.7-5.2 5.8-5.2s5.4 1.9 5.8 5.2"/><circle cx="17" cy="9.5" r="2.5"/><path d="M16.6 14c2.6.1 4.1 1.7 4.4 4.3"/>','schedule.html':'<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M8 14.2h2M13.5 14.2h2.5M8 17h2"/>','results.html':'<path d="M8 4h8v5a4 4 0 0 1-8 0V4Z"/><path d="M8 6H4.8v1.2A3.3 3.3 0 0 0 8 10.5M16 6h3.2v1.2a3.3 3.3 0 0 1-3.2 3.3"/><path d="M12 13v4M8.6 20h6.8M9.8 17h4.4"/>','about.html':'<circle cx="12" cy="12" r="8.6"/><path d="M12 11v5.4"/><circle cx="12" cy="7.8" r=".7" fill="currentColor"/>'};
+var order=['teams.html','schedule.html','index.html','results.html','about.html'];
+var nav=document.querySelector('.links');if(!nav)return;
+var src={};nav.querySelectorAll('a').forEach(function(a){src[a.getAttribute('href')]=a});
+var file=location.pathname.split('/').pop()||'index.html';
+var MAP={'players.html':'teams.html','id.html':'teams.html','scorer.html':'results.html','awards.html':'results.html','share-result.html':'results.html','points.html':'results.html'};
+if(/^team-\d+\.html$/.test(file))file='teams.html';else if(MAP[file])file=MAP[file];
+var act=order.indexOf(file);
+function svg(h){return '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+ICONS[h]+'</svg>'}
+var bar=document.createElement('nav');bar.className='bnav'+(act<0?' noact':'');bar.setAttribute('aria-label','Main');
+var html='<div class="bnav-bar"></div><span class="bnav-bubble" aria-hidden="true"></span><div class="bnav-items">';
+order.forEach(function(h,i){var a=src[h];if(!a)return;var bn=a.getAttribute('data-bn');
+  html+='<a href="'+h+'" class="bnav-i'+(i===act?' on':'')+'"'+(i===act?' aria-current="page"':'')+'><span class="bnav-ic">'+svg(h)+'</span><span class="bnav-t"'+(bn?' data-bn="'+bn.replace(/"/g,'&quot;')+'"':'')+'>'+a.textContent.trim()+'</span></a>'});
+bar.innerHTML=html+'</div>';document.body.appendChild(bar);
+/* the round button slides from the tab you were on to the new one */
+var pos=function(i){return (i*20+10)+'%'},bub=bar.querySelector('.bnav-bubble'),prev=-1;
+try{var p=sessionStorage.getItem('mfl-bn');if(p!==null)prev=parseInt(p,10)}catch(e){}
+try{sessionStorage.setItem('mfl-bn',String(act))}catch(e){}
+if(act>=0){
+  var from=(prev>=0&&prev!==act&&!isNaN(prev))?prev:act;
+  bar.style.setProperty('--nx',pos(from));bub.innerHTML=svg(order[from]);
+  if(from!==act){requestAnimationFrame(function(){requestAnimationFrame(function(){bar.style.setProperty('--nx',pos(act));setTimeout(function(){bub.innerHTML=svg(order[act])},170)})})}
+}
+var fl=document.querySelector('footer .flinks');if(fl&&!fl.querySelector('[href="updates.html"]')){var ab=document.createElement('a');ab.href='updates.html';ab.className='only-m';ab.textContent='Updates';fl.insertBefore(ab,fl.firstChild)}
 })();
-
 
 /* ===== MFL Center quick link ===== */
 (function(){
@@ -105,7 +83,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   var DATA={
     city:{
       name:'City Cosmetics',
-      logo:'assets/sponsor-city-cosmetics.png',
+      logo:'assets/sponsor-city-cosmetics.jpg',
       season:'MFL Season 5 & Season 6',
       sponsor:'Alim Bhaiya',
       location:'Central Plaza, Panchagarh, Bangladesh',
@@ -115,7 +93,7 @@ window.addEventListener('DOMContentLoaded',()=>{
     },
     northbyte:{
       name:'NorthByte Panchagarh',
-      logo:'assets/sponsor-northbyte.png',
+      logo:'assets/sponsor-northbyte.jpg',
       season:'MFL Season 6',
       sponsor:'Farhan Ibne Labib (Sourov)',
       location:'Tetulia Road, Lichutola, Panchagarh, Bangladesh',
@@ -135,4 +113,12 @@ window.addEventListener('DOMContentLoaded',()=>{
   cards.forEach(function(card){card.addEventListener('click',function(){open(card.dataset.sponsor)});});
   modal.querySelectorAll('[data-close-sponsor]').forEach(function(el){el.addEventListener('click',close)});
   document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+})();
+
+/* ===== PWA / install ===== */
+(function(){
+  if('serviceWorker' in navigator){ window.addEventListener('load',function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); }); }
+  var deferred=null;
+  window.addEventListener('beforeinstallprompt',function(e){ e.preventDefault(); deferred=e; document.querySelectorAll('[data-install-app]').forEach(function(b){ b.hidden=false; }); });
+  document.addEventListener('click',function(e){ var b=e.target.closest('[data-install-app]'); if(!b||!deferred)return; deferred.prompt(); deferred.userChoice.finally(function(){deferred=null; document.querySelectorAll('[data-install-app]').forEach(function(x){x.hidden=true;});}); });
 })();

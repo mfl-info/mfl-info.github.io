@@ -9,8 +9,7 @@ THINGS TO SET (config.js)
 - opensAt, fees, scriptUrl: registration settings (keep fees the same as the Apps Script FEES).
 
 BEFORE YOU PUBLISH
-- Facebook preview needs your real website address. Run:  python3 set-site-url.py https://your-site-address
-  (This fills the og:image link in every page. assets/og-image.png is the preview picture.)
+- The Facebook preview address (https://mfl-info.github.io) is already filled in on every page. If you ever change the website address, find and replace it in all .html files. assets/og-image.png is the preview picture.
 - After publishing, paste the link in the Facebook Sharing Debugger to refresh the preview.
 
 AGE LIMIT: 12 to 25. The form checks this in register.html. If your Apps Script also checks age, change it there too.
@@ -35,3 +34,16 @@ Player Profiles: Season 6 lists all 56 squad nicknames. Opening a profile card s
 PLAYER CARDS
 - A player card link carries ONLY the player id, e.g. id.html?pid=MFL-S6-001. Name, goals, roles and team are read from the players list in mfl-data.js, so a link cannot be edited to show made-up details.
 - To add or change a player, edit the "players" list in mfl-data.js. Photos go in assets/players/<playerId>.jpg.
+
+IMAGES
+- Images are already compressed (textures and photos as JPG, the logo as WebP). Keep new player photos under about 150 KB each (720 px wide is enough).
+
+MOBILE BOTTOM NAVIGATION (phones and tablets up to 900 px wide; desktop is not changed)
+- Five tabs in this order: Team, Schedule, Home (middle), Result, About. Updates is a link in the footer on mobile.
+- The curved notch and the round gold button follow the active tab and slide when you open another page.
+- Pages that are not one of the five (Register, FAQ, Rules ...) show a plain bar with no button.
+- All of the code is in ONE block at the end of style.css ("Mobile bottom navigation") and ONE block in script.js. The old stacked fixes were removed.
+- sw.js cache name was changed to mfl-s7-v4 so phones load the new files. Change the number again every time you edit style.css or script.js.
+
+LEADERBOARD FONT
+- Player names, ranks and goals on scorer.html use the Anton font (loaded from Google Fonts on that page only). Fallback if it cannot load: Bebas Neue, Impact. To change the font, edit the "Leaderboard" block at the end of style.css and the Anton link in scorer.html.

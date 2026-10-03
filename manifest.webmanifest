@@ -1,0 +1,14 @@
+{
+  "name": "MosjidPara Football League",
+  "short_name": "MFL",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0a0506",
+  "theme_color": "#8e0710",
+  "description": "Official MosjidPara Football League website.",
+  "icons": [
+    {"src":"assets/favicon-mfl.png","sizes":"512x512","type":"image/png","purpose":"any maskable"},
+    {"src":"assets/favicon-mfl-only.png","sizes":"192x192","type":"image/png","purpose":"any maskable"}
+  ]
+}
