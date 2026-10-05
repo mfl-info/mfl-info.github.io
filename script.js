@@ -122,3 +122,28 @@ var fl=document.querySelector('footer .flinks');if(fl&&!fl.querySelector('[href=
   window.addEventListener('beforeinstallprompt',function(e){ e.preventDefault(); deferred=e; document.querySelectorAll('[data-install-app]').forEach(function(b){ b.hidden=false; }); });
   document.addEventListener('click',function(e){ var b=e.target.closest('[data-install-app]'); if(!b||!deferred)return; deferred.prompt(); deferred.userChoice.finally(function(){deferred=null; document.querySelectorAll('[data-install-app]').forEach(function(x){x.hidden=true;});}); });
 })();
+
+/* ===== Automatic footer copyright year ===== */
+(function(){
+  var year = new Date().getFullYear();
+  var bnDigits = String(year).replace(/\d/g, function(d){ return '০১২৩৪৫৬৭৮৯'[d]; });
+  document.querySelectorAll('footer').forEach(function(footer){
+    var walker = document.createTreeWalker(footer, NodeFilter.SHOW_TEXT);
+    var node;
+    while(node = walker.nextNode()){
+      if(node.nodeValue.indexOf('2026') !== -1){
+        node.nodeValue = node.nodeValue.replace(/2026/g, String(year));
+      }
+      if(node.nodeValue.indexOf('২০২৬') !== -1){
+        node.nodeValue = node.nodeValue.replace(/২০২৬/g, bnDigits);
+      }
+    }
+    footer.querySelectorAll('[data-bn]').forEach(function(el){
+      var value = el.getAttribute('data-bn');
+      if(value){
+        value = value.replace(/২০২৬/g, bnDigits).replace(/2026/g, String(year));
+        el.setAttribute('data-bn', value);
+      }
+    });
+  });
+})();
