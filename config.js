@@ -8,6 +8,6 @@ const CONFIG = {
   season:    "Season 7",                       // shown on the pages
   fees:      { Player: 280, Goalkeeper: 280, Captain: 700 },
   capacity:  { Captain: 8, Player: 40, Goalkeeper: 8, Total: 56 },    // shown on the form. Keep same as the Apps Script FEES.
-  opensAt:   "2026-10-05T00:00:00+06:00",     // registration opens 16 Dec 2026, 12:00 AM (Bangladesh). For testing, set an earlier date, then set it back.
-  scriptUrl: "https://script.google.com/macros/s/AKfycbxWLpzwtnwszglr7eSkDpa_5fJdOhVVgUS7K6PcskVXPmeYS2N6vK6LU_p8K0DnWloC/exec"                                
+  opensAt:   "2026-12-16T00:00:00+06:00",     // registration opens 16 Dec 2026, 12:00 AM (Bangladesh). For testing, set an earlier date, then set it back.
+  scriptUrl: "https://script.google.com/macros/s/AKfycbxWLpzwtnwszglr7eSkDpa_5fJdOhVVgUS7K6PcskVXPmeYS2N6vK6LU_p8K0DnWloC/exec"                                 
 };
