@@ -639,11 +639,11 @@ html.is-bn .leader-name,html.is-bn .top-name{letter-spacing:1.4px!important}
 
 
 /* Season identity logos + Season 6 detailed result cards */
-.season-logo-panel{display:flex;align-items:center;gap:18px;margin:22px 0 30px;padding:18px 22px;border:1px solid rgba(216,173,75,.22);border-radius:16px;background:linear-gradient(145deg,rgba(216,173,75,.08),rgba(10,10,10,.72));max-width:760px}
-.season-logo-panel img{width:150px;height:105px;object-fit:contain;filter:drop-shadow(0 8px 18px rgba(0,0,0,.38))}
+.season-logo-panel{display:flex;align-items:center;gap:18px;margin:22px 0 30px;padding:14px 22px 8px;border:1px solid rgba(216,173,75,.22);border-radius:16px;background:linear-gradient(145deg,rgba(216,173,75,.08),rgba(10,10,10,.72));max-width:760px}
+.season-logo-panel img{width:150px;height:90px;object-fit:contain;filter:drop-shadow(0 8px 18px rgba(0,0,0,.38))}
 .season-logo-panel b{display:block;margin-top:8px;font:700 26px Oswald,Impact,sans-serif;color:#fff;letter-spacing:.6px}
 .season-logo-panel span{display:block;margin-top:5px;color:#888;font-size:11px}
-.results-season-logo{max-width:520px}
+.results-season-logo{max-width:520px;padding-bottom:2px}.results-season-logo img{margin-bottom:-6px}
 .match-results-section{margin-top:58px}
 .match-result-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:26px}
 .match-result-card{position:relative;overflow:hidden;background:linear-gradient(145deg,rgba(20,20,20,.96),rgba(8,8,8,.92));border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:20px;box-shadow:0 14px 34px rgba(0,0,0,.22)}
@@ -662,6 +662,13 @@ html.is-bn .leader-name,html.is-bn .top-name{letter-spacing:1.4px!important}
 .mrc-events p{margin:0;padding:9px 11px;border-radius:9px;background:rgba(255,255,255,.025);color:#aaa;font-size:11px;line-height:1.55}
 .mrc-events p b{color:#ddd}
 .mrc-events .mrc-result{color:var(--gold2);border:1px solid rgba(216,173,75,.16);background:rgba(216,173,75,.055)}
-@media(max-width:760px){.match-result-grid{grid-template-columns:1fr}.season-logo-panel{align-items:flex-start}.season-logo-panel img{width:110px;height:80px}.season-logo-panel b{font-size:22px}.mrc-score strong{font-size:15px}.mrc-score em{font-size:23px}}
+@media(max-width:760px){.match-result-grid{grid-template-columns:1fr}.season-logo-panel{align-items:flex-start;padding:12px 16px 6px}.season-logo-panel img{width:110px;height:70px}.season-logo-panel b{font-size:22px}.mrc-score strong{font-size:15px}.mrc-score em{font-size:23px}}
 @media(max-width:460px){.season-logo-panel{gap:12px;padding:14px}.season-logo-panel img{width:88px;height:68px}.mrc-score{gap:7px;padding:13px 9px}.mrc-score strong{font-size:13px}.mrc-score em{font-size:21px}}
 .logo-gallery figure{min-height:250px}.logo-gallery img{height:240px;object-fit:contain;padding:18px;background:radial-gradient(circle at 50% 45%,rgba(216,173,75,.08),transparent 62%)}
+
+
+/* ---- Season 6 identity card (results page): logo sits centred on a soft dark tile ---- */
+.season-logo-panel.results-season-logo{align-items:center;gap:20px;padding:16px 22px;max-width:520px}
+.season-logo-panel.results-season-logo img{flex:0 0 auto;width:170px;height:auto;aspect-ratio:820/501;object-fit:contain;margin:0;padding:12px 14px;border-radius:14px;background:radial-gradient(circle at 50% 45%,rgba(0,0,0,.52),rgba(0,0,0,.30));border:1px solid rgba(216,173,75,.28);filter:none;box-sizing:content-box}
+.season-logo-panel.results-season-logo b{margin-top:6px}
+@media(max-width:560px){.season-logo-panel.results-season-logo{gap:14px;padding:14px}.season-logo-panel.results-season-logo img{width:min(132px,34vw);padding:9px 10px}}

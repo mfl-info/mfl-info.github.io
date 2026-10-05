@@ -1,0 +1,42 @@
+NOTUN GOOGLE SHEET SETUP (MFL er notun Gmail diye)
+==================================================
+
+A. Sheet banano
+1. MFL er notun Gmail diye login koro.
+2. sheets.google.com e giye ekta khali notun Google Sheet kholo. Nam dao: MFL Season 7 Registration.
+3. Upore Extensions > Apps Script e click koro (SHEET theke kholte hobe, alada project banale kaj korbe na).
+4. Je code ase sob muche felo. apps-script-code.gs file er pura code paste koro.
+5. Code er upore PAY_NUMBER ta thik ase kina dekho (bKash/Nagad number).
+6. Save koro (Ctrl+S).
+
+B. Prothom bar setup (ekbar-i)
+7. Upore function dropdown theke "setup" select kore Run dao.
+8. "Authorization required" ashle: Review permissions > Gmail select > Advanced > Go to project (unsafe) > Allow.
+   (Eta lagbe karon email alert ar weekly backup er permission dorkar.)
+9. Sheet e dekho "Applications" ar "Summary" tab toiri hoyeche.
+
+C. Web app deploy
+10. Deploy > New deployment > gear icon > Web app.
+11. Execute as: Me. Who has access: Anyone. Deploy dao.
+12. Web app URL ta copy koro (https://script.google.com/macros/s/.../exec).
+13. site/config.js er scriptUrl: "" er majhe URL ta paste koro.
+14. Code pore change korle abar: Deploy > Manage deployments > pencil > Version: New version > Deploy.
+
+D. Test korar jonno registration khola
+15. Apps Script e function dropdown theke "openForTest" Run dao (server khulbe).
+16. TEST zip (MFL_SEASON7_TEST_OPEN.zip) ta site e upload koro (config.js e opensAt past date deya ache).
+17. Register page e ekta test application dao. Check koro:
+    - Applications tab e row ashche? ID, Phone ThikThak (0 diye shuru) ase?
+    - Status page e ID + phone diye status dekha jay?
+    - Sheet e Status "Approved" korle status page e fee ar pay number ashe?
+    - TrxID dile status "Payment submitted" hoy? Email alert ashe?
+    - registration-dashboard.html e count ashe?
+
+E. Abar lock kora (test sesh)
+18. Apps Script e "clearTestData" Run dao (test row muche dibe).
+19. Apps Script e "lockRegistration" Run dao (server abar 16 Dec 2026 porjonto lock).
+20. FINAL zip (MFL_SEASON7_FINAL_LOCKED.zip) ta site e upload koro (config.js e opensAt = 16 Dec).
+21. register.html e giye dekho lock + countdown dekhay kina.
+22. Purono Google Sheet delete koro.
+
+Note: server lock ar website lock dutoi dorkar. Keu website bypass korleo server "notopen" bole dibe.

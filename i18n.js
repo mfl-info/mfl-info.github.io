@@ -1,6 +1,6 @@
 /* MFL language toggle (English / বাংলা). Texts with data-bn are swapped; the choice is remembered. */
 (function(){
-  var BN_JS = {
+  var BN_JS = { "Registration is closed.": "রেজিস্ট্রেশন বন্ধ হয়ে গেছে।", "This registration type is full. Please choose another available type.": "এই ধরনের সব জায়গা পূর্ণ হয়ে গেছে। অন্য ধরন বেছে নিন।",
 "Registration has not opened yet.": "রেজিস্ট্রেশন এখনো শুরু হয়নি।",
 "Applications are not open yet. Please contact the organisers (see the Contact page).": "আবেদন এখনো চালু হয়নি। অনুগ্রহ করে আয়োজকদের সঙ্গে যোগাযোগ করুন (যোগাযোগ পেজ দেখুন)।",
 "Registration has not opened yet. Please try again when the countdown ends.": "রেজিস্ট্রেশন এখনো শুরু হয়নি। কাউন্টডাউন শেষ হলে আবার চেষ্টা করুন।",
