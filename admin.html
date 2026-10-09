@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>MFL Admin</title>
+<link rel="icon" href="assets/favicon-mfl-only.png" type="image/png"/>
+<style>
+:root{--bg:#0b0708;--card:#161012;--line:#2f2326;--gold:#d8ad4b;--gold2:#f2d37b;--red:#8e0710;--ink:#f7f2e8;--mut:#a89d93;--ok:#7fe0a3;--bad:#ff9aa1;--r:12px}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI","Hind Siliguri","Nirmala UI",sans-serif}
+a{color:var(--gold2)}h1,h2,h3{margin:0;line-height:1.2}
+.top{position:sticky;top:0;z-index:5;background:#120b0d;border-bottom:2px solid var(--gold);display:flex;gap:10px;align-items:center;padding:10px 14px;flex-wrap:wrap}
+.top b{font-size:18px;letter-spacing:.5px}.top .sp{flex:1}
+.pill{font-size:12px;font-weight:800;padding:5px 10px;border-radius:99px;border:1px solid var(--line);background:#1b1316}
+.pill.on{color:var(--ok);border-color:#2d6b45}.pill.off{color:var(--bad);border-color:#7a2a30}.pill.wait{color:var(--gold2);border-color:#6d5425}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:10px 14px;border-bottom:1px solid var(--line);background:#100a0b;scrollbar-width:thin}
+.tabs button{flex:0 0 auto}
+.wrap{max-width:1100px;margin:0 auto;padding:16px 14px 90px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.card h2{font-size:20px;margin-bottom:6px}.card h3{font-size:16px;margin-bottom:6px}
+.hint{color:var(--mut);font-size:14px;margin:0 0 12px}
+button,.btn{font:inherit;font-weight:700;min-height:44px;padding:9px 16px;border-radius:9px;border:1px solid #6d5425;background:transparent;color:var(--gold2);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+button:hover,.btn:hover{background:rgba(216,173,75,.14)}
+button.gold,.btn.gold{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#1a1205;border-color:transparent}
+button.danger{border-color:#7a2a30;color:var(--bad)}button.sm{min-height:36px;padding:5px 11px;font-size:14px}
+button.tab{border-color:var(--line);color:var(--ink)}button.tab.act{background:var(--gold);color:#1a1205;border-color:var(--gold)}
+button:disabled{opacity:.5;cursor:wait}
+input,select,textarea{font:inherit;width:100%;min-height:44px;padding:9px 11px;border-radius:9px;border:1px solid var(--line);background:#0e0809;color:var(--ink)}
+textarea{min-height:90px;resize:vertical}input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+label{display:block;font-size:12px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--gold);margin:0 0 5px}
+.row{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-bottom:12px}
+.stats{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin-bottom:14px}
+.stat{background:#120b0d;border:1px solid var(--line);border-radius:var(--r);padding:14px;text-align:center}
+.stat b{display:block;font-size:34px;line-height:1.1;color:var(--gold2)}.stat span{font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:1px}
+.stat.big{border-color:#6d5425}.bar{height:12px;border-radius:99px;background:#241a1d;overflow:hidden;margin:6px 0 14px}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2))}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:14px}th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--gold);background:#120b0d;position:sticky;top:0}td select,td input{min-height:36px;padding:4px 8px;font-size:14px}
+.msg{padding:10px 14px;border-radius:9px;margin:10px 0;font-weight:600}.msg.ok{background:rgba(70,180,110,.14);color:var(--ok);border:1px solid #2d6b45}.msg.err{background:rgba(227,90,99,.12);color:var(--bad);border:1px solid #7a2a30}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:20;max-width:92vw}
+.login{max-width:420px;margin:12vh auto;padding:0 16px}.login h1{margin-bottom:14px}
+.item{border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:12px;background:#120b0d}
+.item .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.thumb{max-width:120px;max-height:80px;border-radius:8px;margin-top:6px;display:block;border:1px solid var(--line)}
+.sub{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}.mut{color:var(--mut)}.small{font-size:13px}
+.flex{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+@media(max-width:560px){.stat b{font-size:28px}.card{padding:13px}}
+</style>
+</head>
+<body>
+<div id="app"></div><div id="toast"></div>
+<script src="config.js?v=26"></script>
+<script>
+(function(){
+'use strict';
+var TOK='mfl_admin_token', app=document.getElementById('app');
+var token=''; try{token=localStorage.getItem(TOK)||''}catch(e){}
+function $(s,r){return (r||document).querySelector(s)}
+function el(tag,props){
+  var e=document.createElement(tag);props=props||{};
+  Object.keys(props).forEach(function(k){var v=props[k];
+    if(k==='class')e.className=v;else if(k==='text')e.textContent=v;else if(k.indexOf('on')===0)e.addEventListener(k.slice(2),v);
+    else if(k==='value')e.value=v;else if(v!==false&&v!=null)e.setAttribute(k,v===true?'':v)});
+  for(var i=2;i<arguments.length;i++){[].concat(arguments[i]).forEach(function(c){if(c==null||c===false)return;e.appendChild(c.nodeType?c:document.createTextNode(c))})}
+  return e;
+}
+function toast(text,bad){var t=$('#toast');t.textContent='';var m=el('div',{class:'msg '+(bad?'err':'ok'),text:text});t.appendChild(m);setTimeout(function(){if(m.parentNode)m.remove()},bad?6000:3000)}
+function api(action,extra){
+  var body={action:action,token:token};for(var k in(extra||{}))body[k]=extra[k];
+  return fetch(CONFIG.scriptUrl,{method:'POST',body:JSON.stringify(body)}).then(function(r){return r.json()}).then(function(d){
+    if(d&&d.error==='auth'&&action!=='admin_login'){logout();throw new Error('Session ended. Please log in again.')}
+    return d;
+  });
+}
+function logout(){token='';try{localStorage.removeItem(TOK)}catch(e){}login()}
+
+/* ---------------- login ---------------- */
+var LOGIN_ERR={bad_password:'Wrong password.',locked:'Too many wrong tries. Wait 15 minutes and try again.',not_configured:'The admin password is not set yet. In Apps Script: Project Settings > Script properties > add ADMIN_PASSWORD (at least 6 characters).'};
+function login(){
+  app.textContent='';
+  var msg=el('div'),pw=el('input',{type:'password',id:'pw',autocomplete:'current-password',placeholder:'Admin password'});
+  var go=el('button',{class:'gold',type:'button',text:'Log in'});
+  function submit(){
+    if(!CONFIG.scriptUrl){msg.textContent='';msg.appendChild(el('div',{class:'msg err',text:'config.js has no scriptUrl yet. Paste the Apps Script /exec link there first.'}));return}
+    go.disabled=true;msg.textContent='';
+    api('admin_login',{password:pw.value}).then(function(d){
+      if(d.ok){token=d.token;try{localStorage.setItem(TOK,token)}catch(e){}start()}
+      else msg.appendChild(el('div',{class:'msg err',text:LOGIN_ERR[d.error]||'Could not log in.'}));
+    }).catch(function(){msg.appendChild(el('div',{class:'msg err',text:'No connection. Check the internet and the scriptUrl.'}))}).then(function(){go.disabled=false});
+  }
+  go.addEventListener('click',submit);pw.addEventListener('keydown',function(e){if(e.key==='Enter')submit()});
+  app.appendChild(el('div',{class:'login'},el('h1',{text:'MFL Admin'}),el('p',{class:'hint',text:'Only for the MFL team. Log in to manage registration and the website.'}),
+    el('div',{class:'card'},el('label',{for:'pw',text:'Password'}),pw,el('div',{style:'height:12px'}),go,msg),
+    el('p',{class:'hint small'},el('a',{href:'index.html',text:'← Back to the website'}))));
+  pw.focus();
+}
+
+/* ---------------- shell ---------------- */
+var TABS=[['overview','Overview'],['apps','Applications'],['offline','Offline'],['news','News'],['s7','Season 7'],['media','Media'],['pages','Edit pages'],['settings','Settings']];
+var cur='overview',pill,main;
+function start(){
+  app.textContent='';
+  pill=el('span',{class:'pill wait',text:'…'});
+  var top=el('div',{class:'top'},el('b',{text:'MFL Admin'}),pill,el('span',{class:'sp'}),el('a',{class:'btn sm',href:'index.html',text:'View site'}),el('button',{class:'sm',type:'button',text:'Log out',onclick:function(){api('admin_logout').then(logout,logout)}}));
+  var tabs=el('div',{class:'tabs',role:'tablist'});
+  TABS.forEach(function(t){tabs.appendChild(el('button',{class:'tab'+(t[0]===cur?' act':''),type:'button','data-t':t[0],text:t[1],onclick:function(){cur=t[0];[].forEach.call(tabs.children,function(b){b.classList.toggle('act',b.getAttribute('data-t')===cur)});show()}}))});
+  main=el('div',{class:'wrap'});app.append(top,tabs,main);show();
+}
+function show(){
+  main.textContent='';main.appendChild(el('p',{class:'mut',text:'Loading…'}));
+  var f={overview:tOverview,apps:tApps,offline:tOffline,news:function(b){return coll(b,CFG.news)},s7:tS7,media:tMedia,pages:tPages,settings:tSettings}[cur];
+  var box=el('div');
+  Promise.resolve(f(box)).then(function(){main.textContent='';main.appendChild(box)}).catch(function(e){main.textContent='';main.appendChild(el('div',{class:'msg err',text:e.message||'Something went wrong.'}))});
+}
+function card(title,hint){var c=el('div',{class:'card'});if(title)c.appendChild(el('h2',{text:title}));if(hint)c.appendChild(el('p',{class:'hint',text:hint}));return c}
+function fmtDT(iso){return iso?String(iso).replace('T',' ').slice(0,16):'—'}
+function regState(d){
+  var now=Date.now(),o=Date.parse(d.effective.opensAt),c=d.effective.closesAt?Date.parse(d.effective.closesAt):0,full=d.counts.combined.total>=d.total;
+  if(full)return['FULL','off'];if(c&&now>c)return['CLOSED','off'];if(now<o)return['LOCKED until '+fmtDT(d.effective.opensAt),'wait'];return['OPEN','on'];
+}
+
+/* ---------------- overview ---------------- */
+function tOverview(box){
+  return api('admin_overview').then(function(d){
+    var c=d.counts,tot=d.total,pc=Math.min(100,Math.round(c.combined.total*100/tot)),st=regState(d);
+    pill.textContent='Registration: '+st[0];pill.className='pill '+st[1];
+    var k=card('MFL '+d.season+' registration','Online and offline together fill the same '+tot+' places. Visitors only see the combined number.');
+    var s=el('div',{class:'stats'},stat('Online',c.online.total),stat('Offline (confirmed)',c.offline.total),stat('Combined',c.combined.total+' / '+tot,1),stat('Remaining',Math.max(0,tot-c.combined.total)));
+    k.append(s,el('div',{class:'bar'},el('i',{style:'width:'+pc+'%'})));
+    if(c.combined.total>=tot)k.appendChild(el('div',{class:'msg err',text:'FULL. New registrations are blocked.'}));
+    var rows=[['Captain','Captains'],['Player','Players'],['Goalkeeper','Goalkeepers']].map(function(t){return el('tr',null,el('td',{text:t[1]}),el('td',{text:c.online[t[0]]}),el('td',{text:c.offline[t[0]]}),el('td',{text:c.combined[t[0]]}),el('td',{text:d.capacity[t[0]]}),el('td',{text:Math.max(0,d.capacity[t[0]]-c.combined[t[0]])}))});
+    k.appendChild(el('div',{class:'tw'},el('table',null,el('thead',null,el('tr',null,['Type','Online','Offline','Total','Limit','Left'].map(function(x){return el('th',{text:x})}))),el('tbody',null,rows))));
+    var q=card('Registration times','Opens: '+fmtDT(d.effective.opensAt)+'   Closes: '+(d.effective.closesAt?fmtDT(d.effective.closesAt):'not set (TBA)')+'  (Bangladesh time). Change them in Settings.');
+    box.append(k,q);
+  });
+  function stat(l,v,big){return el('div',{class:'stat'+(big?' big':'')},el('b',{text:v}),el('span',{text:l}))}
+}
+
+/* ---------------- online applications ---------------- */
+var STATUSES=['Pending','Approved','Rejected','Payment submitted','Confirmed'];
+function tApps(box){
+  return api('admin_apps').then(function(d){
+    var rows=d.rows.slice().reverse(),fs=el('select',null,el('option',{value:'',text:'All statuses'}),STATUSES.map(function(s){return el('option',{value:s,text:s})})),q=el('input',{placeholder:'Search name, phone, ID…'});
+    var tb=el('tbody');
+    function draw(){
+      tb.textContent='';var t=q.value.toLowerCase();
+      rows.filter(function(r){return(!fs.value||r.status===fs.value)&&(!t||[r.name,r.phone,r.id,r.address].join(' ').toLowerCase().indexOf(t)>=0)}).forEach(function(r){
+        var sel=el('select',null,STATUSES.map(function(s){return el('option',{value:s,text:s,selected:s===r.status})}));
+        sel.addEventListener('change',function(){var old=r.status;api('admin_set_status',{id:r.id,status:sel.value}).then(function(x){if(x.ok){r.status=sel.value;toast(r.name+': '+sel.value)}else{sel.value=old;toast('Could not change status',1)}})});
+        tb.appendChild(el('tr',null,el('td',{text:r.id}),el('td',{text:r.name}),el('td',{text:r.type}),el('td',{text:r.age}),el('td',{text:r.phone}),el('td',{text:r.address}),el('td',null,sel),el('td',{text:r.trx?(r.method+' · '+r.trx+' · ৳'+r.amount):'—'})));
+      });
+      if(!tb.children.length)tb.appendChild(el('tr',null,el('td',{colspan:8,class:'mut',text:'No applications.'})));
+    }
+    fs.addEventListener('change',draw);q.addEventListener('input',draw);draw();
+    var k=card('Online applications ('+rows.length+')','Call the applicant, then set Approved or Rejected. A Rejected application frees its place. When the TrxID matches your bKash/Nagad SMS, set Confirmed.');
+    k.append(el('div',{class:'row'},el('div',null,el('label',{text:'Filter'}),fs),el('div',null,el('label',{text:'Search'}),q)),
+      el('div',{class:'tw'},el('table',null,el('thead',null,el('tr',null,['ID','Name','Type','Age','Phone','Address','Status','Payment'].map(function(x){return el('th',{text:x})}))),tb)),
+      el('div',{style:'height:10px'}),el('button',{class:'sm',type:'button',text:'Download CSV',onclick:function(){csv(rows)}}));
+    box.appendChild(k);
+  });
+}
+function csv(rows){
+  var cols=['id','time','name','age','type','phone','address','status','amount','method','sender','trx','note'];
+  var out=[cols.join(',')].concat(rows.map(function(r){return cols.map(function(c){return '"'+String(r[c]==null?'':r[c]).replace(/"/g,'""')+'"'}).join(',')}));
+  var a=el('a',{href:URL.createObjectURL(new Blob(['\ufeff'+out.join('\n')],{type:'text/csv'})),download:'mfl-applications.csv'});document.body.appendChild(a);a.click();a.remove();
+}
+
+/* ---------------- offline registrations ---------------- */
+function tOffline(box){
+  return api('admin_offline_list').then(function(d){
+    var f={name:el('input',{placeholder:'Full name'}),type:el('select',null,['Player','Goalkeeper','Captain'].map(function(x){return el('option',{text:x})})),
+      payment:el('select',null,['Cash','bKash','Nagad','Other'].map(function(x){return el('option',{text:x})})),status:el('select',null,['Confirmed','Pending','Cancelled'].map(function(x){return el('option',{text:x})})),
+      phone:el('input',{placeholder:'01XXXXXXXXX (optional)',inputmode:'numeric'}),note:el('input',{placeholder:'Note (optional)'})};
+    var k=card('Add an offline registration','Cash or in-person registrations. Only "Confirmed" ones use a place. They count in the same total as online registrations.');
+    var msg=el('div');
+    var add=el('button',{class:'gold',type:'button',text:'Add',onclick:function(){
+      add.disabled=true;msg.textContent='';
+      api('admin_offline_save',{item:{name:f.name.value,type:f.type.value,payment:f.payment.value,status:f.status.value,phone:f.phone.value,note:f.note.value}}).then(function(x){
+        if(x.ok){toast('Added '+x.id);show()}else{msg.appendChild(el('div',{class:'msg err',text:x.error==='full'?'No place left for that type (or all 56 are taken).':'Please check the name and options.'}));add.disabled=false}
+      }).catch(function(e){toast(e.message,1);add.disabled=false});
+    }});
+    k.append(el('div',{class:'row'},fld('Name',f.name),fld('Type',f.type),fld('Payment',f.payment),fld('Status',f.status)),el('div',{class:'row'},fld('Phone',f.phone),fld('Note',f.note)),add,msg);
+    var tb=el('tbody');
+    d.rows.slice().reverse().forEach(function(r){
+      var sel=el('select',null,['Confirmed','Pending','Cancelled'].map(function(s){return el('option',{value:s,text:s,selected:s===r.status})}));
+      sel.addEventListener('change',function(){api('admin_offline_save',{item:{id:r.id,name:r.name,type:r.type,payment:r.payment,status:sel.value,phone:r.phone,note:r.note}}).then(function(x){if(x.ok){r.status=sel.value;toast('Saved')}else{sel.value=r.status;toast(x.error==='full'?'No place left':'Could not save',1)}})});
+      tb.appendChild(el('tr',null,el('td',{text:r.id}),el('td',{text:r.name}),el('td',{text:r.type}),el('td',{text:r.payment}),el('td',null,sel),el('td',{text:r.phone||'—'}),el('td',null,el('button',{class:'sm danger',type:'button',text:'Delete',onclick:function(){if(confirm('Delete '+r.name+'?'))api('admin_offline_delete',{id:r.id}).then(function(){toast('Deleted');show()})}}))));
+    });
+    if(!tb.children.length)tb.appendChild(el('tr',null,el('td',{colspan:7,class:'mut',text:'No offline registrations yet.'})));
+    var l=card('Offline list ('+d.rows.length+')');l.appendChild(el('div',{class:'tw'},el('table',null,el('thead',null,el('tr',null,['ID','Name','Type','Payment','Status','Phone',''].map(function(x){return el('th',{text:x})}))),tb)));
+    box.append(k,l);
+  });
+}
+function fld(label,input){return el('div',null,el('label',{text:label}),input)}
+
+/* ---------------- content lists ---------------- */
+var CFG={
+  news:{key:'news',title:'News & announcements',hint:'Shown on the Updates page (newest first). Leave the list empty to hide the block.',add:'Add announcement',f:[['title','Title','text'],['date','Date','date'],['summary','Text','textarea'],['image','Photo','image'],['link','Link (optional)','url']]},
+  s7teams:{key:'s7teams',title:'Season 7 teams',hint:'Shown on the Teams page. Empty = "To be announced".',add:'Add team',f:[['name','Team name','text'],['group','Group','select:,A,B'],['captain','Captain','text'],['note','Note','text']]},
+  s7schedule:{key:'s7schedule',title:'Season 7 schedule',hint:'Shown on the Schedule page. Empty = "Schedule will be announced".',add:'Add match',f:[['date','Date','date'],['time','Time (e.g. 4:00 PM)','text'],['home','Home team','text'],['away','Away team','text'],['stage','Stage (Group / Semi-final…)','text'],['venue','Venue','text']]},
+  s7results:{key:'s7results',title:'Season 7 results',hint:'Shown on the Results page. Man of the Match stays "Not published" until you type a name.',add:'Add result',f:[['home','Home team','text'],['hs','Home goals','number'],['as','Away goals','number'],['away','Away team','text'],['stage','Stage','text'],['date','Date','date'],['scorers','Scorers (one per line, e.g. Name - 2)','textarea'],['motm','Man of the Match','text']]},
+  s7awards:{key:'s7awards',title:'Season 7 awards',hint:'Shown on the Awards page. Empty = "Coming Soon".',add:'Add award',f:[['title','Award (e.g. Top Scorer)','text'],['winner','Winner','text'],['note','Note','text']]},
+  gallery:{key:'gallery',title:'Gallery photos',hint:'Upload a photo or paste a link. Shown on the Gallery page.',add:'Add photo',f:[['url','Photo','image'],['caption','Caption','text'],['season','Season','select:Season 7,Season 6']]},
+  highlights:{key:'highlights',title:'Highlight videos',hint:'Paste a Facebook or YouTube link. Shown on the Highlights page.',add:'Add video',f:[['title','Title','text'],['url','Video link','url'],['season','Season','select:Season 7,Season 6']]}
+};
+function coll(box,cfg){
+  return api('admin_content_get',{key:cfg.key}).then(function(d){
+    var items=Array.isArray(d.value)?d.value:[],list=el('div');
+    function draw(){
+      list.textContent='';
+      if(!items.length)list.appendChild(el('p',{class:'mut',text:'Nothing here yet. The website shows its "coming soon" text.'}));
+      items.forEach(function(it,i){
+        var c=el('div',{class:'item'}),grid=el('div',{class:'row'});
+        cfg.f.forEach(function(F){grid.appendChild(fieldFor(it,F))});
+        c.appendChild(grid);
+        c.appendChild(el('div',{class:'acts'},el('button',{class:'sm',type:'button',text:'↑',disabled:i===0,onclick:function(){swap(i,i-1)}}),el('button',{class:'sm',type:'button',text:'↓',disabled:i===items.length-1,onclick:function(){swap(i,i+1)}}),el('button',{class:'sm danger',type:'button',text:'Delete',onclick:function(){if(confirm('Delete this item?')){items.splice(i,1);draw()}}})));
+        list.appendChild(c);
+      });
+    }
+    function swap(a,b){var t=items[a];items[a]=items[b];items[b]=t;draw()}
+    function fieldFor(it,F){
+      var k=F[0],ty=F[2],inp;
+      if(ty==='textarea')inp=el('textarea',{value:it[k]||''});
+      else if(ty.indexOf('select:')===0){inp=el('select',null,ty.slice(7).split(',').map(function(o){return el('option',{value:o,text:o||'(none)',selected:o===(it[k]||'')})}));if(!it[k]&&inp.options.length)it[k]=inp.value}
+      else inp=el('input',{type:ty==='image'||ty==='url'?'text':ty,value:it[k]||'',placeholder:ty==='url'||ty==='image'?'https://…':''});
+      inp.addEventListener('input',function(){it[k]=inp.value});inp.addEventListener('change',function(){it[k]=inp.value});
+      var w=el('div',null,el('label',{text:F[1]}),inp);
+      if(ty==='image'){
+        var pv=el('img',{class:'thumb',alt:''});function sp(){if(/^https?:/.test(inp.value)){pv.src=inp.value;pv.style.display='block'}else pv.style.display='none'}
+        inp.addEventListener('input',sp);sp();
+        var file=el('input',{type:'file',accept:'image/jpeg,image/png,image/webp',style:'display:none'});
+        var ub=el('button',{class:'sm',type:'button',text:'⬆ Upload photo',onclick:function(){file.click()}});
+        file.addEventListener('change',function(){if(!file.files[0])return;ub.disabled=true;ub.textContent='Uploading…';
+          upload(file.files[0]).then(function(url){inp.value=url;it[k]=url;sp();toast('Photo uploaded')}).catch(function(e){toast(e.message,1)}).then(function(){ub.disabled=false;ub.textContent='⬆ Upload photo'})});
+        w.append(el('div',{style:'height:6px'}),ub,file,pv);
+      }
+      return w;
+    }
+    var blank={};cfg.f.forEach(function(F){blank[F[0]]=''});
+    var k=card(cfg.title,cfg.hint);
+    var add=el('button',{type:'button',class:'gold',text:'+ '+cfg.add,onclick:function(){var n={};for(var x in blank)n[x]=blank[x];if(cfg.key==='news')n.date=new Date().toISOString().slice(0,10);items.push(n);draw()}});
+    var save=el('button',{type:'button',class:'gold',text:'💾 Save',onclick:function(){
+      save.disabled=true;api('admin_content_save',{key:cfg.key,value:items}).then(function(x){toast(x.ok?'Saved. The website is updated.':(x.error==='too_big'?'Too much text. Remove something.':'Could not save'),!x.ok)}).catch(function(e){toast(e.message,1)}).then(function(){save.disabled=false})}});
+    draw();k.append(list,el('div',{class:'flex'},add,save));box.appendChild(k);
+  });
+}
+function upload(file){
+  return new Promise(function(res,rej){
+    var img=new Image(),u=URL.createObjectURL(file);
+    img.onload=function(){
+      var m=1400,s=Math.min(1,m/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);
+      var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(u);
+      var data=c.toDataURL('image/jpeg',0.82).split(',')[1];
+      api('admin_upload',{name:(file.name||'photo').replace(/\.[^.]+$/,'')+'.jpg',mime:'image/jpeg',data:data}).then(function(d){d.ok?res(d.url):rej(new Error(d.error==='invalid'?'Photo too big or wrong type':'Upload failed'))},rej);
+    };
+    img.onerror=function(){rej(new Error('That file is not a photo'))};img.src=u;
+  });
+}
+function tS7(box){
+  var keys=[['s7teams','Teams'],['s7schedule','Schedule'],['s7results','Results'],['s7awards','Awards']],sub=el('div',{class:'sub'}),body=el('div'),on=keys[0][0];
+  function go(k){on=k;[].forEach.call(sub.children,function(b){b.classList.toggle('act',b.getAttribute('data-k')===k)});body.textContent='';coll(body,CFG[k]).catch(function(e){body.appendChild(el('div',{class:'msg err',text:e.message}))})}
+  keys.forEach(function(p){sub.appendChild(el('button',{class:'tab',type:'button','data-k':p[0],text:p[1],onclick:function(){go(p[0])}}))});
+  box.append(sub,body);go(on);
+}
+function tMedia(box){
+  var sub=el('div',{class:'sub'}),body=el('div');
+  function go(k){[].forEach.call(sub.children,function(b){b.classList.toggle('act',b.getAttribute('data-k')===k)});body.textContent='';coll(body,CFG[k])}
+  [['gallery','Gallery'],['highlights','Highlights']].forEach(function(p){sub.appendChild(el('button',{class:'tab',type:'button','data-k':p[0],text:p[1],onclick:function(){go(p[0])}}))});
+  box.append(sub,body);go('gallery');
+}
+
+/* ---------------- edit page text ---------------- */
+function tPages(box){
+  var k=card('Edit any text on the website','1) Open a page below.  2) Press the gold "✏️ Edit text" button (bottom-left).  3) Click on any text and type.  4) Press "💾 Save".  Switch the site to বাংলা first to edit the Bangla text. "Undo my edits" brings back the original text of that page.');
+  var pages=[['index.html','Home'],['teams.html','Teams'],['schedule.html','Schedule'],['results.html','Results'],['scorer.html','Scorers'],['points.html','Points'],['awards.html','Awards'],['updates.html','Updates'],['register.html','Register'],['status.html','Status'],['faq.html','FAQ'],['rules.html','Rules'],['contact.html','Contact'],['about.html','About'],['gallery.html','Gallery'],['highlights.html','Highlights'],['poll.html','Fan poll'],['volunteer.html','Volunteer'],['archive.html','Season archive']];
+  k.appendChild(el('div',{class:'flex'},pages.map(function(p){return el('a',{class:'btn sm',href:p[0]+'?mfl-edit=1',text:p[1]})})));
+  box.appendChild(k);
+  box.appendChild(card('Good to know','Text changes show for everyone within a minute. Lists (news, Season 7 teams, schedule, results, awards, photos, videos) are edited in their own tabs. Photos of Season 6 players and the Season 6 archive stay as they are.'));
+}
+
+/* ---------------- settings ---------------- */
+function tSettings(box){
+  return api('admin_overview').then(function(d){
+    var s=d.settings,mode=s.mode;
+    var modes=[['auto','Automatic','Opens and closes at the times below.'],['open','Open now','Registration is open right now, ignoring the times.'],['locked','Locked','Registration is closed. Visitors see the countdown.']];
+    var radios=modes.map(function(m){var r=el('input',{type:'radio',name:'mode',value:m[0],checked:m[0]===mode,style:'width:auto;min-height:0;margin-right:8px'});return el('label',{style:'text-transform:none;letter-spacing:0;color:var(--ink);font-size:16px;display:flex;align-items:center;margin-bottom:8px'},r,el('span',null,el('b',{text:m[1]+' '}),el('span',{class:'mut',text:'· '+m[2]})))});
+    var o=el('input',{type:'datetime-local',value:(s.opensAt||d.effective.opensAt||'').slice(0,16)}),c=el('input',{type:'datetime-local',value:(s.closesAt||'').slice(0,16)});
+    if(!s.opensAt)o.value='2026-12-16T00:00';
+    var notice=el('input',{value:s.notice||'',placeholder:'e.g. Team draw on 20 December'}),nl=el('input',{value:s.noticeLink||'',placeholder:'https://… (optional)'});
+    var k=card('Registration & site notice','Times are Bangladesh time. Server and website both follow these settings.');
+    k.appendChild(el('label',{text:'Registration mode'}));radios.forEach(function(r){k.appendChild(r)});
+    k.append(el('div',{class:'row'},fld('Opens at',o),fld('Closes at (leave empty = TBA)',c)),
+      el('div',{class:'row'},fld('Notice bar on top of every page (empty = none)',notice),fld('Notice link',nl)));
+    var save=el('button',{class:'gold',type:'button',text:'💾 Save settings',onclick:function(){
+      var m=$('input[name=mode]:checked',k).value;save.disabled=true;
+      api('admin_settings_save',{settings:{mode:m,opensAt:o.value?o.value+':00+06:00':'',closesAt:c.value?c.value+':00+06:00':'',notice:notice.value,noticeLink:nl.value}}).then(function(x){toast(x.ok?'Saved. Visitors get it within a minute.':'Could not save',!x.ok)}).catch(function(e){toast(e.message,1)}).then(function(){save.disabled=false})}});
+    k.appendChild(save);
+    var p=card('Admin password','To change it: open the Apps Script > Project Settings (gear) > Script properties > edit ADMIN_PASSWORD. Use at least 6 characters, and do not share it.');
+    box.append(k,p);
+  });
+}
+
+if(!CONFIG.scriptUrl)login();else if(token){api('admin_ping').then(function(d){d.ok?start():login()}).catch(login)}else login();
+})();
+</script>
+</body>
+</html>

@@ -27,6 +27,16 @@ window.fillDynamic=function(){
   setTimeout(function(){sk.classList.add('hide');setTimeout(function(){sk.remove()},2)},1);
 })();
 window.addEventListener('DOMContentLoaded',()=>{
+  if(typeof CONFIG!=='undefined'){
+    const openAt=Date.parse(CONFIG.opensAt);
+    document.querySelectorAll('.enroll').forEach(a=>{
+      const label=a.querySelector('[data-bn]')||a.querySelector('span');
+      if(label){
+        if(Date.now()<openAt){ label.textContent='Opens 16 Dec'; label.setAttribute('data-bn','১৬ ডিসেম্বর শুরু'); }
+        else { label.textContent='Register Now'; label.setAttribute('data-bn','রেজিস্ট্রেশন করুন'); }
+      }
+    });
+  }
   fillDynamic();
   const $=id=>document.getElementById(id);
   if($('s7d')&&typeof CONFIG!=='undefined'){
@@ -72,6 +82,8 @@ var fl=document.querySelector('footer .flinks');if(fl&&!fl.querySelector('[href=
   document.querySelectorAll('footer .flinks').forEach(function(fl){
     if(!fl.querySelector('[href="center.html"]')){
       var a=document.createElement('a'); a.href='center.html'; a.textContent='MFL Center'; fl.insertBefore(a,fl.firstChild);
+    } else {
+      var seen=false; Array.from(fl.querySelectorAll('[href="center.html"]')).forEach(function(a){ if(seen) a.remove(); else seen=true; });
     }
   });
 })();

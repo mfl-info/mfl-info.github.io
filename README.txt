@@ -56,3 +56,12 @@ GALLERY (gallery.html)
 GOOGLE SEARCH
 - Every page has a canonical link, sitemap.xml lists all pages, robots.txt allows search engines.
 - In Google Search Console (search.google.com/search-console) add https://mfl-info.github.io/ with the "HTML tag" method, then paste your code in index.html where it says PASTE_CODE_HERE (and remove the comment marks), upload, and press Verify. Then submit https://mfl-info.github.io/sitemap.xml
+
+ADMIN PANEL (new)
+- admin.html is the control room (not linked from the website, not in the sitemap, hidden from search). Open https://YOUR-SITE/admin.html
+- It needs the Apps Script from apps-script-code.gs (keep that file OFF GitHub) and the /exec link in config.js (scriptUrl).
+- From the panel you can: see online / offline / combined registrations, manage applications and offline (cash) registrations, post news,
+  fill in Season 7 teams / schedule / results / awards, add gallery photos and highlight videos, open or lock registration, set opening/closing time,
+  show a notice bar, and edit any text on any page (open a page from "Edit pages", press "Edit text").
+- content.js (loaded on every page) shows that content. Visitors only ever get the COMBINED slot number; the online/offline split exists only inside the admin panel.
+- The admin password lives only in Apps Script (Project Settings > Script properties > ADMIN_PASSWORD), never in these files.

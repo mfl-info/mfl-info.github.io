@@ -1,0 +1,20 @@
+MFL SEASON 7 LAUNCH UPDATE
+
+Completed in this build:
+- Season 7 home overview and registration progress UI.
+- Registration opening button now shows “Opens 16 Dec” before opening.
+- Season 7 schedule page now shows “Schedule will be announced”; old fixtures are clearly under Season 6 Archive.
+- Season 6 teams, player profiles, scorers, results, awards, records, H2H and historical updates are clearly marked as archive content where applicable.
+- Registration role cards are balanced into three columns on desktop and responsive on smaller screens.
+- Home card action buttons have extra spacing.
+- FAQ/rules include registration closing-by-capacity and refund wording.
+- Registration success screen reminds applicants to screenshot/keep their Application ID.
+- Registration capacity progress is shown on Home and Register pages and can read the backend summary when scriptUrl is connected.
+- Empty placeholder pages (Gallery, Highlights, Fan Poll, H2H, Records, Volunteer) are hidden from MFL Center until they have meaningful content; direct URLs remain available.
+- Footer year remains automatic.
+- Footer MFL Center duplicate links are prevented.
+- Sponsor home copy no longer says “supporting MFL Season 6”.
+
+Remaining external setup:
+- config.js still has scriptUrl: "" because no real Google Apps Script Web App URL was supplied in the provided files/conversation. Paste the deployed Web App URL between the quotes before opening registration.
+- WhatsApp/phone contact was intentionally not changed, per request.

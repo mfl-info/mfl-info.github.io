@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Apply | MFL</title><link rel="canonical" href="https://mfl-info.github.io/register.html"/><meta content="Apply for MFL Season 7. Only for the boys of Mosjidpara, Panchagarh, aged 12 to 25. Registration opens on 16 December 2026." name="description"/><meta content="#8e0710" name="theme-color"/><meta content="website" property="og:type"/><meta content="MosjidPara Football League" property="og:site_name"/><meta content="Apply | MosjidPara Football League" property="og:title"/><meta content="Apply for MFL Season 7. Only for the boys of Mosjidpara, Panchagarh, aged 12 to 25. Registration opens on 16 December 2026." property="og:description"/><meta content="https://mfl-info.github.io/assets/og-image.png" property="og:image"/><meta content="1200" property="og:image:width"/><meta content="630" property="og:image:height"/><meta content="summary_large_image" name="twitter:card"/>
-<link href="style.css?v=23" rel="stylesheet"/>
+<link href="style.css?v=26" rel="stylesheet"/>
 <link href="assets/favicon-mfl-only.png" rel="icon" type="image/png"/><link rel="manifest" href="manifest.webmanifest"/>
 <style>
 .regwrap{max-width:680px;margin:34px auto 0}
@@ -26,7 +26,7 @@
 .err{display:none;font-size:12px;color:#ff8f96;margin-top:6px}
 .field.bad .err{display:block}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.types{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.types{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .type{position:relative;display:block;margin:0}
 .type input{position:absolute;opacity:0;width:1px;height:1px}
 .field .type .card{display:block;padding:16px;border:1px solid #333;border-radius:9px;background:#0e0e0e;cursor:pointer;text-transform:none;letter-spacing:0;color:#fff;font-weight:400}
@@ -93,7 +93,7 @@
 .locked #regfs{opacity:.42;filter:grayscale(.4)}
 .locked .submit{cursor:not-allowed}
 @media(max-width:600px){.row2,.flow{grid-template-columns:1fr}.fee{font-size:48px}.idbox b{font-size:32px}.units{gap:6px}.unit span{font-size:8px;letter-spacing:1.2px}}
-</style>
+@media(max-width:600px){.types{grid-template-columns:1fr!important}.type .card{min-height:0!important}.field .type .card{display:grid;grid-template-columns:auto 1fr;align-items:center;column-gap:14px;padding:14px 16px}.type .ico{grid-row:1/4;margin:0}}</style>
 <link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/></head>
 <body>
 <header class="nav"><div class="navin"><a class="brand" href="index.html"><img alt="MFL" class="brand-logo" src="assets/mfl-logo.webp"/><span><b>MOSJIDPARA</b><small>FOOTBALL LEAGUE • OFFICIAL</small></span></a><button aria-label="Menu" class="menu">☰</button><nav class="links"><a data-bn="হোম" href="index.html">Home</a><a data-bn="টিম" href="teams.html">Team</a><a data-bn="সূচি" href="schedule.html">Schedule</a><a data-bn="ফলাফল" href="results.html">Result</a><a data-bn="আপডেট" href="updates.html">Updates</a><a data-bn="আমাদের সম্পর্কে" href="about.html">About</a></nav><a class="enroll" href="register.html"><span data-bn="রেজিস্ট্রেশন করুন">Register Now</span><svg aria-hidden="true" class="arr" height="22" viewbox="0 0 24 24" width="22"><circle cx="12" cy="12" fill="#1a1205" r="12"></circle><path d="M7 12h9M12.5 7.5L17 12l-4.5 4.5" fill="none" stroke="#f3cf72" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></a></div></header>
@@ -123,7 +123,7 @@
   <div class="capacity-grid">
     <div><b>8</b><span>Captains</span></div><div><b>40</b><span>Players</span></div><div><b>8</b><span>Goalkeepers</span></div>
   </div>
-  <p class="capacity-note">Player and Goalkeeper have the same entry fee. Final acceptance is subject to MFL management approval.</p>
+  <p class="capacity-note">Player and Goalkeeper have the same entry fee. Final acceptance is subject to MFL management approval.</p><div class="reg-progress panel"><div class="titleline"><div><div class="eyebrow">LIVE CAPACITY</div><h3><span id="reg-count">0 / 56</span> SLOTS FILLED</h3></div><span id="reg-percent">0%</span></div><div class="progress-track"><span id="reg-bar"></span></div></div>
 </div>
 <ol aria-label="How it works" class="flow">
 <li data-bn="&lt;b&gt;আবেদন&lt;/b&gt;ফর্ম পূরণ করে আপনার অ্যাপ্লিকেশন আইডি নিন।"><b>Apply</b>Fill in the form and get your Application ID.</li>
@@ -150,8 +150,8 @@
 <span class="lbl" data-bn="রেজিস্ট্রেশনের ধরন &lt;i&gt;*&lt;/i&gt;" id="type-lbl">Registration type <i>*</i></span>
 <div aria-labelledby="type-lbl" class="types" role="radiogroup">
 <label class="type"><input name="type" type="radio" value="Player"/><span class="card"><span class="ico">⚽</span><span class="nm" data-bn="খেলোয়াড়">Player</span><span class="pr" data-price="Player"></span></span></label>
-<label class="type"><input name="type" type="radio" value="Captain"/><span class="card"><span class="ico">🧢</span><span class="nm" data-bn="ক্যাপ্টেন">Captain</span><span class="pr" data-price="Captain"></span></span></label>
 <label class="type"><input name="type" value="Goalkeeper" type="radio"/><span class="card"><span class="ico">🧤</span><span class="nm" data-bn="গোলকিপার">Goalkeeper</span><span class="pr" data-price="Goalkeeper"></span></span></label>
+<label class="type"><input name="type" type="radio" value="Captain"/><span class="card"><span class="ico">🧢</span><span class="nm" data-bn="ক্যাপ্টেন">Captain</span><span class="pr" data-price="Captain"></span></span></label>
 </div>
 <div class="err" data-bn="খেলোয়াড় বা ক্যাপ্টেন বেছে নিন।">Choose Player, Goalkeeper or Captain.</div>
 </div>
@@ -187,7 +187,7 @@
 <div class="idbox">
 <div class="k" data-bn="অ্যাপ্লিকেশন আইডি">Application ID</div>
 <b id="s-id"></b>
-<button class="copybtn" data-bn="আইডি কপি করুন" id="copyid" type="button">Copy ID</button>
+<button class="copybtn" data-bn="আইডি কপি করুন" id="copyid" type="button">Copy ID</button><p class="id-reminder" data-bn="আপনার Application ID-এর স্ক্রিনশট রেখে দিন এবং প্রয়োজনে কপি করে সংরক্ষণ করুন।">Take a screenshot of your Application ID and keep a copy for future status checks.</p>
 </div>
 <div class="warn" data-bn="&lt;b&gt;এই আইডি সেভ করে রাখুন&lt;/b&gt;, স্ক্রিনশটসহ। স্ট্যাটাস দেখতে ও অনুমোদনের পর ফি দিতে আইডি আর আবেদনের ফোন নম্বর লাগবে।"><b>Save this ID</b> with a screenshot. You need it, and the phone number you used, to check your status and to pay after approval.</div>
 <p data-bn="আমাদের ম্যানেজমেন্ট টিম শিগগিরই আপনাকে ফোন করবে। অনুমোদন পেলে আপনার আইডিতে পেমেন্টের অপশন খুলবে।">Our management team will call you soon. If you are approved, the payment option opens on your ID.</p>
@@ -197,8 +197,8 @@
 </div></section>
 </main>
 <footer><div class="wrap footerin"><div><b>MFL</b><p data-bn="© ২০২৬ মসজিদপাড়া ফুটবল লিগ — MFL">© 2026 MosjidPara Football League — MFL</p></div><div><p data-bn="বাগানবাড়ি উজ্জ্বল মাঠ, মসজিদপাড়া, পঞ্চগড়">BaganBari Ujjwal Ground, Mosjidpara, Panchagarh</p><a class="social" data-bn="ফেসবুক পেজ ↗" href="https://www.facebook.com/share/1CgdDE5JKB/" rel="noopener" target="_blank">Facebook Page ↗</a><p class="flinks"><a data-bn="নিয়মাবলি" href="rules.html">Rules</a><a data-bn="সাধারণ প্রশ্ন (FAQ)" href="faq.html">FAQ</a><a data-bn="যোগাযোগ ও গোপনীয়তা" href="contact.html">Contact &amp; Privacy</a></p><p class="flinks" data-contact="" style="margin-top:6px"></p><p class="flinks" style="margin-top:12px"><button aria-label="Language / ভাষা" class="lang" id="langbtn" type="button">বাংলা</button></p></div></div></footer>
-<script src="script.js?v=23"></script><script src="i18n.js?v=23"></script>
-<script src="config.js?v=23"></script>
+<script src="script.js?v=26"></script><script src="i18n.js?v=26"></script>
+<script src="config.js?v=26"></script><script src="content.js?v=26"></script>
 <script>
 const $ = id => document.getElementById(id);
 const form = $("regform");
@@ -243,6 +243,10 @@ function tick() {
   setTimeout(tick, 1000 - (Date.now() % 1000));
 }
 tick();
+
+const regTotal=56;
+function setRegProgress(n){n=Math.max(0,Math.min(regTotal,Number(n)||0));const p=Math.round(n/regTotal*100);const c=document.getElementById('reg-count'),b=document.getElementById('reg-bar'),q=document.getElementById('reg-percent');if(c)c.textContent=n+' / '+regTotal;if(b)b.style.width=p+'%';if(q)q.textContent=p+'%';}
+if(typeof CONFIG!=='undefined'&&CONFIG.scriptUrl){fetch(CONFIG.scriptUrl+'?action=summary&season='+encodeURIComponent(CONFIG.season)).then(r=>r.json()).then(d=>{if(d&&d.ok&&d.total!==undefined)setRegProgress(d.total)}).catch(()=>{});}
 
 const phoneRe = /^(?:\+?88)?01[3-9]\d{8}$/;
 const cleanPhone = v => v.replace(/[\s-]/g, "");
