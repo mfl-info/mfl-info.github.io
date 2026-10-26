@@ -25,6 +25,7 @@
 };
   var L = (window.CONFIG && CONFIG.defaultLang) || "en";
   try { var saved = localStorage.getItem("mfl-lang"); if (saved === "en" || saved === "bn") L = saved; } catch (e) {}
+  window.MFL_BN_JS = BN_JS;
   window.getLang = function(){ return L; };
   window.t = function(s){ return L === "bn" && BN_JS[s] ? BN_JS[s] : s; };
   function apply(){

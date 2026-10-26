@@ -1,0 +1,77 @@
+MFL SEASON 7: SETUP + ADMIN GUIDE
+=================================
+Tinta file ache:
+  1) MFL_SEASON7_FINAL_SITE.zip  = website (GitHub e upload)
+  2) apps-script-code.gs         = Google Sheet er code (GitHub e KOKHONO dibe na)
+  3) SETUP_GUIDE.txt             = ei guide
+
+Registration: 1 Dec 2026, 12:00 AM theke 23 Jan 2027, 11:59 PM (Bangladesh time).
+Fee: Player 220, Goalkeeper 220, Captain 700 taka.
+Slot: 64 ta (8 Captain + 48 Player + 8 Goalkeeper). 8 ta team, ek team e 8 jon: 1 Captain, 1 Goalkeeper, 6 Player.
+Mathe 6 jon khelbe (Goalkeeper shoho), baki 2 jon sub.
+Fee/slot bodlate hole: config.js (fees, capacity) ar apps-script-code.gs (FEES, CAPACITY, TOTAL_CAPACITY) DUITAI ekoi rakhte hobe.
+
+PART A. NOTUN GOOGLE SHEET (MFL er notun Gmail diye) - computer e koro
+1. Notun Gmail diye login. Browser e  sheets.new  likhe Enter. Nam: MFL Season 7 Registration
+2. Upore Extensions > Apps Script (sheet er bhetor theke kholte hobe).
+3. Je code ase sob muche (Ctrl+A, Delete). apps-script-code.gs Notepad e khule sob copy kore paste koro.
+4. Code er upore PAY_NUMBER thik ase kina dekho. Ctrl+S.
+5. Bam dike gear icon (Project Settings) > niche "Script properties" > Add script property.
+   Property: ADMIN_PASSWORD    Value: nijer gopon password (kom pokkhe 6 okkhor). Save script properties.
+6. Editor e fire jao. Upore function dropdown theke  setup  select kore Run. Authorization ashle:
+   Review permissions > Gmail > Advanced > Go to project (unsafe) > Allow.
+7. Deploy > New deployment > gear > Web app. Execute as: Me. Who has access: Anyone. Deploy.
+8. Web app URL (.../exec) copy koro.
+
+PART B. WEBSITE UPLOAD
+9.  MFL_SEASON7_FINAL_SITE.zip Extract koro. config.js Notepad e khule  scriptUrl: ""  er majhe URL paste, Ctrl+S.
+10. GitHub repository te Add file > Upload files. Extract kora folder er BHETORER sob file/folder tene dao. Commit changes.
+11. 2 minute por site e Ctrl+F5 dao.
+12. Code pore bodlale: Deploy > Manage deployments > pencil > Version: New version > Deploy.
+
+PART C. ADMIN PANEL  (site/admin.html  ... ei link kothao dekhano nai)
+Password diye login. Tab gulo:
+ - Overview / Applications / Offline : registration er hisab, approve, payment.
+ - News : announcement.
+ - Season 7 > Teams   : team nam, group (A/B), captain.
+ - Season 7 > Matches : (niche dekho)
+ - Season 7 > Awards  : puroshkar.
+ - All texts          : SITE ER PROTITA LEKHA edit (niche dekho).
+ - Settings           : registration open/close/lock, notice bar, Season 6 archive.
+
+MATCHES (ekta match = ekta record)
+ 1. "+ Add new match". Stage, date, time, venue, dui team, goal, scorer (ek line e ek jon: "Rakib - 2"), Man of the Match.
+ 2. Status: Draft (keu dekhe na) > Preview > Publish. Unpublish / Archive / Restore o ache.
+ 3. "Use as template": nOtun draft toiri kore, sudhu stage/date/time/venue copy kore. Ager match mochhe na.
+ 4. Match order: ↑ ↓ button.
+ 5. Penalty shootout alada ghor e. Shudhu draw match e dewa jay. Main score kokhono bodlay na.
+ 6. Ekhane score bodlale Results, Schedule, Man of the Match, Share card, Points table, Top scorers SOB jaygay bodle jay.
+ 7. Points table nije hishab hoy: jOy 3, draw 1, har 0. Shudhu PUBLISHED "Group Stage" match gone. Semi-final/Final points e gone na.
+    Ranking: Points > Goal difference > Goals for. Team er group Teams tab theke ashe.
+ 8. Match ID (S7-M01...) ekbar ee. Same ID duibar gona hoy na.
+
+ALL TEXTS (protita shobdo edit)
+ 1. Page select kore "Load page" (6 second). Menu, button, heading, FAQ, form label, hint, page title, Google description shob ashbe.
+ 2. English ar Bangla dui ghor e bodlao. "This page only" ba "Every page where this exact text appears" bachho. Save.
+ 3. "Messages shown after an action" : error message, "not open yet", empty list er lekha.
+ 4. Edit korar por visitor next page load e dekhe. Bhul hole: lekha ager mon likhe abar Save.
+
+SEASON 6 ARCHIVE (Settings tab)
+ - "Archive Season 6 now" : results/schedule/teams/scorers/awards theke Season 6 sriye "View the Season 6 archive" link dey.
+ - Ba ekta tarikh dao (jemon Ramadan shuru), oi din nije archive hobe. Kichu delete hoy na.
+ - Player Hub (56 jon) kokhono archive hoy na.
+
+PART D. TEST (registration 1 Dec porjonto locked)
+ - Admin > Settings > Registration mode = "Open now". Test application dao > Admin e Approve > Status page e check.
+ - Test sesh: test row Sheet theke muche dao. Mode = "Automatic" (1 Dec e nije khulbe, 23 Jan e nije bondho hobe).
+ - Purono Google Sheet delete koro.
+
+BAKI (apnar decision / porer dhap)
+ - Refund policy: FAQ te ekhono "announced later" lekha. All texts diye likhe dao.
+ - Season 7 er group koyta, tie-break niyom: ekhon Points > GD > Goals For, 2 ta group (A/B) dhore.
+ - Player Hub er "kon player kon season e" alada porichalona: ekhono toiri hoy nai.
+
+SABDHAN
+ - apps-script-code.gs ar admin password KOKHONO GitHub e dibe na.
+ - Password bhule gele: Apps Script > Project Settings > Script properties > ADMIN_PASSWORD bodlao.
+ - 8 bar vul password dile 15 minute admin login bondho thake.

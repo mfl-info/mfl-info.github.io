@@ -32,7 +32,7 @@ window.addEventListener('DOMContentLoaded',()=>{
     document.querySelectorAll('.enroll').forEach(a=>{
       const label=a.querySelector('[data-bn]')||a.querySelector('span');
       if(label){
-        if(Date.now()<openAt){ label.textContent='Opens 16 Dec'; label.setAttribute('data-bn','১৬ ডিসেম্বর শুরু'); }
+        if(Date.now()<openAt){ label.textContent='Opens 1 Dec'; label.setAttribute('data-bn','১ ডিসেম্বর শুরু'); }
         else { label.textContent='Register Now'; label.setAttribute('data-bn','রেজিস্ট্রেশন করুন'); }
       }
     });
@@ -79,7 +79,7 @@ var fl=document.querySelector('footer .flinks');if(fl&&!fl.querySelector('[href=
 
 /* ===== MFL Center quick link ===== */
 (function(){
-  document.querySelectorAll('footer .flinks').forEach(function(fl){
+  Array.prototype.slice.call(document.querySelectorAll('footer .flinks'),0,1).forEach(function(fl){
     if(!fl.querySelector('[href="center.html"]')){
       var a=document.createElement('a'); a.href='center.html'; a.textContent='MFL Center'; fl.insertBefore(a,fl.firstChild);
     } else {

@@ -14,7 +14,7 @@
   var tt = function (en, bn) { return lang() === 'bn' ? bn : en; };
 
   /* ---------- 1. settings (sync, before the page scripts run) ---------- */
-  function applySettings(s) { if (!s) return; if (s.opensAt) C.opensAt = s.opensAt; C.closesAt = s.closesAt || ''; }
+  function applySettings(s) { if (!s) return; if (s.opensAt) C.opensAt = s.opensAt; C.closesAt = s.closesAt || ''; C.archived = !!s.archived; }
   if (store && store.settings) applySettings(store.settings);
 
   /* ---------- helpers ---------- */
@@ -45,6 +45,9 @@
     s7teams:    [['SEASON 7', 'Teams', 'To be announced'], ['সিজন ৭', 'টিম', 'ঘোষণা করা হবে']],
     s7schedule: [['SEASON 7', 'Schedule', 'Schedule will be announced'], ['সিজন ৭', 'সূচি', 'সূচি ঘোষণা করা হবে']],
     s7results:  [['SEASON 7', 'Results', 'No Season 7 results yet.'], ['সিজন ৭', 'ফলাফল', 'সিজন ৭-এর কোনো ফলাফল এখনো নেই।']],
+    s7scorers:  [['SEASON 7', 'Top Scorers', 'No Season 7 goals published yet.'], ['সিজন ৭', 'শীর্ষ গোলদাতা', 'সিজন ৭-এর কোনো গোল এখনো প্রকাশ করা হয়নি।']],
+    s7motm:     [['SEASON 7', 'Man of the Match', 'No Man of the Match published yet.'], ['সিজন ৭', 'ম্যান অফ দ্য ম্যাচ', 'ম্যান অফ দ্য ম্যাচ এখনো প্রকাশ করা হয়নি।']],
+    s7points:   [['SEASON 7', 'Points Table', 'Season 7 standings will appear here once the teams are announced.'], ['সিজন ৭', 'পয়েন্ট টেবিল', 'দল ঘোষণার পর সিজন ৭-এর পয়েন্ট টেবিল এখানে দেখা যাবে।']],
     s7awards:   [['SEASON 7', 'Awards', 'Coming Soon'], ['সিজন ৭', 'পুরস্কার', 'শিগগিরই আসছে']],
     gallery:    [['SEASON 7', 'Gallery', 'Coming Soon'], ['সিজন ৭', 'গ্যালারি', 'শিগগিরই আসছে']],
     highlights: [['SEASON 7', 'Highlights', 'Coming Soon'], ['সিজন ৭', 'হাইলাইটস', 'শিগগিরই আসছে']]
@@ -67,31 +70,84 @@
       var g = h('div', 'mfl-grid');
       items.forEach(function (t) {
         var c = h('div', 'mfl-card'); c.appendChild(h('h3', '', t.name));
-        if (t.group) c.appendChild(h('span', 'mfl-chip', (tt('Group ', 'গ্রুপ ') + t.group)));
-        if (t.captain) c.appendChild(h('p', '', tt('Captain: ', 'ক্যাপ্টেন: ') + t.captain));
+        if (t.group) { var chip = h('span', 'mfl-chip'); chip.appendChild(h('span', '', tt('Group', 'গ্রুপ'))); chip.appendChild(document.createTextNode(' ' + t.group)); c.appendChild(chip); }
+        if (t.captain) { var cp = h('p'); lbl(cp, 'Captain:', 'ক্যাপ্টেন:', t.captain); c.appendChild(cp); }
         if (t.note) c.appendChild(h('p', 'mfl-muted', t.note));
         g.appendChild(c);
       }); box.appendChild(g);
     },
     s7schedule: function (box, items) {
       items.forEach(function (m) {
-        var r = h('div', 'mfl-card mfl-match');
-        r.appendChild(h('div', 'mfl-when', [m.date, m.time].filter(Boolean).join(' · ')));
-        r.appendChild(h('div', 'mfl-vs', (m.home || 'TBA') + '  vs  ' + (m.away || 'TBA')));
-        var meta = [m.stage, m.venue].filter(Boolean).join(' · '); if (meta) r.appendChild(h('div', 'mfl-muted', meta));
+        var r = h('div', 'mfl-card mfl-match'), when = h('div', 'mfl-when');
+        if (m.no) { lbl(when, 'Match', 'ম্যাচ', m.no); }
+        var bits = [m.stage, [m.date, m.time].filter(Boolean).join(' · ')].filter(Boolean).join(' · ');
+        if (bits) when.appendChild(document.createTextNode((m.no ? ' · ' : '') + bits));
+        if (when.childNodes.length) r.appendChild(when);
+        r.appendChild(h('div', 'mfl-vs', (m.home || 'TBA') + '  ' + scoreOf(m) + '  ' + (m.away || 'TBA')));
+        if (m.venue) r.appendChild(h('div', 'mfl-muted', m.venue));
         box.appendChild(r);
       });
     },
     s7results: function (box, items) {
       items.forEach(function (m) {
-        var r = h('div', 'mfl-card mfl-match');
-        var meta = [m.stage, m.date].filter(Boolean).join(' · '); if (meta) r.appendChild(h('div', 'mfl-when', meta));
-        var sc = (m.hs !== '' && m.as !== '') ? (m.hs + ' – ' + m.as) : 'vs';
-        r.appendChild(h('div', 'mfl-vs', (m.home || 'TBA') + '  ' + sc + '  ' + (m.away || 'TBA')));
-        if (m.scorers) r.appendChild(h('div', 'mfl-pre mfl-muted', tt('Scorers: ', 'গোলদাতা: ') + m.scorers));
-        r.appendChild(h('div', 'mfl-muted', tt('Man of the Match: ', 'ম্যান অফ দ্য ম্যাচ: ') + (m.motm || tt('Not published', 'প্রকাশ করা হয়নি'))));
+        var r = h('div', 'mfl-card mfl-match'), when = h('div', 'mfl-when');
+        if (m.no) { lbl(when, 'Match', 'ম্যাচ', m.no); }
+        var bits = [m.stage, m.date].filter(Boolean).join(' · ');
+        if (bits) when.appendChild(document.createTextNode((m.no ? ' · ' : '') + bits));
+        if (when.childNodes.length) r.appendChild(when);
+        r.appendChild(h('div', 'mfl-vs', (m.home || 'TBA') + '  ' + scoreOf(m) + '  ' + (m.away || 'TBA')));
+        var sh = lines(m.sh), sa = lines(m.sa);
+        if (sh || sa) {
+          var d = h('div', 'mfl-muted'); lbl(d, 'Scorers:', 'গোলদাতা:', '');
+          if (sh) d.appendChild(h('div', 'mfl-pre', (m.home || '') + ': ' + sh));
+          if (sa) d.appendChild(h('div', 'mfl-pre', (m.away || '') + ': ' + sa));
+          r.appendChild(d);
+        }
+        var mo = h('div', 'mfl-muted'); lbl(mo, 'Man of the Match:', 'ম্যান অফ দ্য ম্যাচ:', m.motm ? m.motm : '');
+        if (!m.motm) { mo.appendChild(document.createTextNode(' ')); mo.appendChild(h('span', '', tt('Not published', 'প্রকাশ করা হয়নি'))); }
+        r.appendChild(mo);
         box.appendChild(r);
       });
+    },
+    s7motm: function (box, items) {
+      var g = h('div', 'mfl-grid');
+      items.forEach(function (m) {
+        var c = h('div', 'mfl-card'), top = h('div', 'mfl-muted');
+        if (m.no) lbl(top, 'Match', 'ম্যাচ', m.no);
+        if (m.stage) top.appendChild(document.createTextNode((m.no ? ' · ' : '') + m.stage));
+        c.appendChild(top); c.appendChild(h('h3', '', m.motm));
+        c.appendChild(h('p', 'mfl-muted', (m.home || 'TBA') + '  ' + scoreOf(m) + '  ' + (m.away || 'TBA')));
+        g.appendChild(c);
+      }); box.appendChild(g);
+    },
+    s7points: function (box, groups) {
+      var grid = h('div', 'points-grid');
+      groups.forEach(function (g) {
+        var card = h('div', 'points-card'), ttl = h('div', 'points-title');
+        if (g.group) { ttl.appendChild(h('span', '', tt('GROUP', 'গ্রুপ'))); ttl.appendChild(document.createTextNode(' ' + g.group)); }
+        else ttl.appendChild(h('span', '', tt('STANDINGS', 'স্ট্যান্ডিং')));
+        card.appendChild(ttl);
+        var sc = h('div', 'points-scroll'), tb = h('table', 'table standings'), hd = h('tr');
+        [['Pos', 'অবস্থান'], ['Team', 'টিম'], ['P', 'খেলা'], ['W', 'জয়'], ['D', 'ড্র'], ['L', 'হার'], ['GF', 'দিয়েছে'], ['GA', 'খেয়েছে'], ['GD', 'গোল ব্যবধান'], ['Pts', 'পয়েন্ট']].forEach(function (c) { hd.appendChild(h('th', '', tt(c[0], c[1]))); });
+        var th = h('thead'); th.appendChild(hd); tb.appendChild(th);
+        var bd = h('tbody');
+        g.rows.forEach(function (t, i) {
+          var tr = h('tr'); [i + 1, null, t.p, t.w, t.d, t.l, t.gf, t.ga, (t.gd > 0 ? '+' : '') + t.gd, null].forEach(function (v, n) {
+            var td = h('td'); if (n === 1) { td.appendChild(h('b', '', t.name)); } else if (n === 9) { td.appendChild(h('b', '', String(t.pts))); } else td.textContent = String(v);
+            tr.appendChild(td);
+          }); bd.appendChild(tr);
+        });
+        tb.appendChild(bd); sc.appendChild(tb); card.appendChild(sc); grid.appendChild(card);
+      });
+      box.appendChild(grid);
+      box.appendChild(h('p', 'points-note', tt('P = Played · W = Won · D = Draw · L = Lost · GF = Goals For · GA = Goals Against · GD = Goal Difference · Pts = Points. Ranking: Points → Goal Difference → Goals For.', 'P = খেলা · W = জয় · D = ড্র · L = হার · GF = দেওয়া গোল · GA = খাওয়া গোল · GD = গোল ব্যবধান · Pts = পয়েন্ট। র‍্যাঙ্কিং: পয়েন্ট → গোল ব্যবধান → দেওয়া গোল।')));
+    },
+    s7scorers: function (box, items) {
+      var sc = h('div', 'points-scroll'), tb = h('table', 'table standings'), hd = h('tr');
+      [['Pos', 'অবস্থান'], ['Player', 'খেলোয়াড়'], ['Team', 'টিম'], ['Goals', 'গোল']].forEach(function (c) { hd.appendChild(h('th', '', tt(c[0], c[1]))); });
+      var th = h('thead'); th.appendChild(hd); tb.appendChild(th); var bd = h('tbody');
+      items.forEach(function (p, i) { var tr = h('tr'); [String(i + 1), p.name, p.team, String(p.goals)].forEach(function (v, n) { var td = h('td'); if (n === 1) td.appendChild(h('b', '', v)); else td.textContent = v; tr.appendChild(td); }); bd.appendChild(tr); });
+      tb.appendChild(bd); sc.appendChild(tb); box.appendChild(sc);
     },
     s7awards: function (box, items) {
       var g = h('div', 'mfl-grid');
@@ -107,7 +163,76 @@
       items.forEach(function (v) { if (!okUrl(v.url)) return; var c = h('div', 'mfl-card mfl-hl'); c.appendChild(h('h3', '', v.title || 'Highlight')); c.appendChild(ext(v.url, tt('Watch ↗', 'দেখুন ↗'))); box.appendChild(c); });
     }
   };
-  function items(k) { var c = store && store.collections && store.collections[k]; return Array.isArray(c) ? c : []; }
+  function lbl(parent, en, bn, rest) { parent.appendChild(h('span', 'mfl-lbl', tt(en, bn))); if (rest !== '' && rest != null) parent.appendChild(document.createTextNode(' ' + rest)); }
+  function lines(t) { return String(t || '').split(/\n+/).map(function (s) { return s.trim(); }).filter(Boolean).join(', '); }
+  function isNum(v) { return /^\d+$/.test(String(v == null ? '' : v)); }
+  function hasScore(m) { return isNum(m.hs) && isNum(m.as); }
+  function scoreOf(m) {
+    if (!hasScore(m)) return 'vs';
+    var s = m.hs + ' – ' + m.as;
+    if (isNum(m.hp) && isNum(m.ap)) s += ' (' + m.hp + '–' + m.ap + ' ' + tt('pens', 'পেনাল্টি') + ')';
+    return s;
+  }
+  function raw(k) { var c = store && store.collections && store.collections[k]; return Array.isArray(c) ? c : []; }
+  function pubMatches() { return raw('s7matches').filter(function (m) { return m && m.status === 'published'; }); }
+  /* Season 7 standings: 3 for a win, 1 each for a draw. Only published GROUP matches with a score count, and one match id counts once. */
+  function standings() {
+    var T = {}, ord = [], seen = {};
+    function team(name, group) {
+      var n = norm(name); if (!n) return null; var k = n.toLowerCase();
+      if (!T[k]) { T[k] = { name: n, group: norm(group), p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0 }; ord.push(k); } else if (group && !T[k].group) T[k].group = norm(group);
+      return T[k];
+    }
+    raw('s7teams').forEach(function (t) { team(t.name, t.group); });
+    pubMatches().filter(function (m) { return hasScore(m) && /group/i.test(m.stage || ''); }).forEach(function (m) {
+      if (seen[m.id]) return; seen[m.id] = 1;
+      var a = team(m.home), b = team(m.away); if (!a || !b || a === b) return;
+      var x = +m.hs, y = +m.as; a.p++; b.p++; a.gf += x; a.ga += y; b.gf += y; b.ga += x;
+      if (x > y) { a.w++; b.l++; } else if (x < y) { b.w++; a.l++; } else { a.d++; b.d++; }
+    });
+    if (!ord.length) return [];
+    var groups = {}, gord = [];
+    ord.forEach(function (k) { var t = T[k]; t.gd = t.gf - t.ga; t.pts = t.w * 3 + t.d; var g = t.group || ''; if (!groups[g]) { groups[g] = []; gord.push(g); } groups[g].push(t); });
+    gord.sort();
+    return gord.map(function (g) { groups[g].sort(function (a, b) { return b.pts - a.pts || b.gd - a.gd || b.gf - a.gf || a.name.localeCompare(b.name); }); return { group: g, rows: groups[g] }; });
+  }
+  function items(k) {
+    if (k === 's7schedule') return pubMatches();
+    if (k === 's7results') return pubMatches().filter(hasScore);
+    if (k === 's7motm') return pubMatches().filter(function (m) { return norm(m.motm); });
+    if (k === 's7points') return standings();
+    if (k === 's7scorers') {                                  // goals are read from the "Name - 2" lines of published matches
+      var T = {};
+      pubMatches().forEach(function (m) {
+        [[m.sh, m.home], [m.sa, m.away]].forEach(function (pr) {
+          String(pr[0] || '').split(/\n+/).forEach(function (l) {
+            l = norm(l); if (!l) return;
+            var x = /^(.*?)[\s\-–:x×]*\(?(\d{1,2})\)?$/.exec(l), name = l, n = 1;
+            if (x && norm(x[1])) { name = norm(x[1]); n = +x[2]; }
+            var key = name.toLowerCase(); if (!T[key]) T[key] = { name: name, team: pr[1] || '', goals: 0 }; T[key].goals += n;
+          });
+        });
+      });
+      return Object.keys(T).map(function (k) { return T[k]; }).sort(function (a, b) { return b.goals - a.goals || a.name.localeCompare(b.name); });
+    }
+    return raw(k);
+  }
+  var ARCH = { 'results.html': [2, 3, 4], 'schedule.html': [2], 'teams.html': [1, 2], 'awards.html': [1], 'scorer.html': [1] };
+  function applyArchive() {
+    var idx = ARCH[PAGE]; if (!idx || RAW) return;
+    var view6 = /[?&]season=6\b/.test(location.search), on = !!C.archived && !view6;
+    var secs = document.querySelectorAll('main > section');
+    idx.forEach(function (i) { if (secs[i]) secs[i].classList.toggle('mfl-s6-hidden', on); });
+    var an = document.querySelector('main > .wrap > .archive-notice'); if (an) an.parentNode.classList.toggle('mfl-s6-hidden', on);
+    var old = document.querySelector('.mfl-archive-bar'); if (old) old.remove();
+    if (!C.archived) return;
+    var bar = h('div', 'mfl-archive-bar'), a = h('a');
+    bar.appendChild(h('span', '', view6 ? tt('You are viewing the Season 6 archive.', 'আপনি সিজন ৬ আর্কাইভ দেখছেন।') : tt('Season 6 has been moved to the archive.', 'সিজন ৬ আর্কাইভে সরানো হয়েছে।')));
+    a.href = view6 ? PAGE : PAGE + '?season=6'; a.textContent = view6 ? tt('Back to Season 7', 'সিজন ৭-এ ফিরুন') : tt('View the Season 6 archive', 'সিজন ৬ আর্কাইভ দেখুন');
+    bar.appendChild(a); var m = document.querySelector('main'); if (m) m.insertBefore(bar, m.firstChild);
+  }
+  window.MFL_items = function (k) { return items(k); };
+  window.MFL_render = function () { renderAll(); };
   function renderAll() {
     document.querySelectorAll('[data-mfl]').forEach(function (box) {
       var k = box.getAttribute('data-mfl'), tx = TXT[k], fn = R[k]; if (!tx || !fn) return;
@@ -120,12 +245,13 @@
       if (k === 'news' && !list.length) { box.hidden = true; return; }
       box.hidden = false;
       var w = h('div', 'wrap'); box.appendChild(w);
-      var head = h('div', 'mfl-head'); head.appendChild(h('div', 'eyebrow', tx[L][0])); head.appendChild(h('h2', '', tx[L][1])); w.appendChild(head);
+      if (!box.hasAttribute('data-nohead')) { var head = h('div', 'mfl-head'); head.appendChild(h('div', 'eyebrow', tx[L][0])); head.appendChild(h('h2', '', tx[L][1])); w.appendChild(head); }
       if (main.length) { var body = h('div', 'mfl-body'); fn(body, main); w.appendChild(body); }
       else w.appendChild(h('div', 'mfl-empty', tx[L][2]));
       if (six.length) { var h6 = h('div', 'mfl-head'); h6.appendChild(h('div', 'eyebrow', tt('SEASON 6 ARCHIVE', 'সিজন ৬ আর্কাইভ'))); w.appendChild(h6); var b6 = h('div', 'mfl-body'); fn(b6, six); w.appendChild(b6); }
     });
-    notice();
+    notice(); applyArchive();
+    try { document.dispatchEvent(new Event('mfl:data')); } catch (e) {}
   }
   function notice() {
     var old = document.querySelector('.mfl-notice'); if (old) old.remove();
@@ -138,6 +264,7 @@
   /* ---------- 3. text edits made with the admin edit mode ---------- */
   function sigOf(el) { var s = (el.__en !== undefined ? el.__en : el.innerHTML); return s.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim().slice(0, 40); }
   function applyPatches() {
+    if (RAW) return;
     var list = (store && store.patches && store.patches[PAGE]) || [];
     list.forEach(function (p) {
       var el; try { el = document.querySelector(p.p); } catch (e) { return; }
@@ -162,13 +289,15 @@
       var hadMore = ((old.patches && old.patches[PAGE]) || []).length > (d.patches || []).length;
       patches[PAGE] = d.patches || [];
       var needReload = (d.settings.opensAt !== C.opensAt) || ((d.settings.closesAt || '') !== (C.closesAt || '')) || hadMore;
-      store = { settings: d.settings, collections: d.collections, patches: patches, v: d.v };
+      var tp = (old.tp && typeof old.tp === 'object') ? old.tp : {}; tp[PAGE] = (d.texts && d.texts.p) || [];
+      store = { settings: d.settings, collections: d.collections, patches: patches, tg: (d.texts && d.texts.g) || [], tp: tp, v: d.v };
       try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {}
       if (needReload) {                                       // once per change, so the form opens/locks right away
         var tag = JSON.stringify([d.settings.opensAt, d.settings.closesAt, patches[PAGE].length]);
         if (sessionStorage.getItem('mfl_rl') !== tag) { try { sessionStorage.setItem('mfl_rl', tag); } catch (e) {} location.reload(); return; }
       }
-      renderAll(); applyPatches();
+      applySettings(d.settings);                                // archive switch etc. take effect on the first visit
+      renderAll(); applyPatches(); buildRules(); applyRules();
     }).catch(function () {});
   }
 
@@ -264,17 +393,67 @@
     } else bar.appendChild(h('span', 'mfl-bar-tag', 'Saving…'));
   }
   function initAdmin() {
-    if (!token || !BASE) return;
+    if (!token || !BASE || RAW) return;
     api('admin_ping', {}).then(function (r) {
       if (!r.ok) { try { localStorage.removeItem(TOK); } catch (e) {} return; }
       setBar('idle'); if (/[?&]mfl-edit=1/.test(location.search)) startEdit();
     }).catch(function () {});
   }
 
+
+  /* ---------- 4. text rules: every word on every page can be changed from the admin panel ---------- */
+  var RAW = /[?&]mfl-raw=1/.test(location.search);          // the admin panel opens pages like this to read the ORIGINAL text
+  var TR = { en: {}, bn: {} }, trTmr = 0, SKIPT = { SCRIPT: 1, STYLE: 1, NOSCRIPT: 1, TEXTAREA: 1, TEMPLATE: 1 };
+  function norm(s) { return String(s == null ? '' : s).replace(/\s+/g, ' ').trim(); }
+  function buildRules() {
+    TR = { en: {}, bn: {} };
+    if (!store) return;
+    [store.tg || [], (store.tp && store.tp[PAGE]) || []].forEach(function (list) {   // page rules come last, so they win
+      list.forEach(function (r) {
+        var kind = r.a || '';
+        if (r.en && r.k) TR.en[kind + '\u0001' + r.k] = r.en;
+        if (r.bn && r.kb) TR.bn[kind + '\u0001' + r.kb] = r.bn;
+      });
+    });
+  }
+  function applyRules() {
+    if (RAW || !document.body) return;
+    var L = lang() === 'bn' ? TR.bn : TR.en;
+    if (!Object.keys(L).length) return;
+    var w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT), n, nodes = [];
+    while ((n = w.nextNode())) nodes.push(n);
+    nodes.forEach(function (n) {
+      var p = n.parentNode; if (!p || SKIPT[p.nodeName]) return;
+      if (p.closest && p.closest('#mfl-bar,[contenteditable],[data-mfl]')) return;
+      var raw = n.nodeValue, s = norm(raw); if (!s) return;
+      var rep = L['\u0001' + s];
+      if (rep && rep !== s) n.nodeValue = raw.match(/^\s*/)[0] + rep + raw.match(/\s*$/)[0];
+    });
+    function attr(sel, name, kind) {
+      document.querySelectorAll(sel).forEach(function (e) {
+        var v = e.getAttribute(name), r = L[kind + '\u0001' + norm(v)];
+        if (r && r !== v) e.setAttribute(name, r);
+      });
+    }
+    attr('[placeholder]', 'placeholder', 'ph'); attr('img[alt]', 'alt', 'alt'); attr('[aria-label]', 'aria-label', 'aria');
+    var tr = L['ttl\u0001' + norm(document.title)]; if (tr && tr !== document.title) document.title = tr;
+    var md = document.querySelector('meta[name="description"]');
+    if (md) { var r2 = TR.en['md\u0001' + norm(md.getAttribute('content'))]; if (r2 && r2 !== md.getAttribute('content')) md.setAttribute('content', r2); }
+  }
+  var trN = 0, trT0 = 0;
+  function scheduleRules() {
+    var now = Date.now(); if (now - trT0 > 3000) { trT0 = now; trN = 0; }
+    if (++trN > 25) return;                                   // safety: never loop
+    clearTimeout(trTmr); trTmr = setTimeout(applyRules, 120);
+  }
+  window.MFL_applyRules = function () { buildRules(); applyRules(); };
+  try { buildRules(); } catch (e) {}
+
   /* ---------- start ---------- */
   document.addEventListener('DOMContentLoaded', function () {
-    renderAll(); applyPatches(); sync(); initAdmin();
-    try { new MutationObserver(function () { renderAll(); applyPatches(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] }); } catch (e) {}
+    renderAll(); applyPatches(); buildRules(); applyRules(); sync(); initAdmin();
+    try { new MutationObserver(function () { renderAll(); applyPatches(); buildRules(); applyRules(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] }); } catch (e) {}
+    try { new MutationObserver(scheduleRules).observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['placeholder', 'alt', 'aria-label'] }); } catch (e) {}
   });
-  window.addEventListener('load', applyPatches);
+  window.addEventListener('load', function () { applyPatches(); applyRules(); });
 })();

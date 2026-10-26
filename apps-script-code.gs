@@ -8,18 +8,18 @@
  *  3. Deploy > New deployment > Web app > Execute as: Me > Who has access: Anyone > Deploy. Copy the /exec link into config.js (scriptUrl).
  *  After changing this code later: Deploy > Manage deployments > pencil > New version > Deploy.
  *
- * Capacity: 8 Captains + 40 Players + 8 Goalkeepers = 56. ONLINE + OFFLINE(confirmed) count together.
+ * Capacity: 8 Captains + 48 Players + 8 Goalkeepers = 64 (8 teams x 8: 1 captain, 1 goalkeeper, 6 players). ONLINE + OFFLINE(confirmed) count together.
  * The public website only ever gets the COMBINED number. The online/offline split is for the admin panel only.
  */
 
 // ---------------- EDIT THESE ----------------
 const PAY_NUMBER  = '01740468822';                                   // bKash / Nagad number (shown only to approved people)
 const SEASON      = 'Season 7';
-const FEES        = { Player: 280, Goalkeeper: 280, Captain: 700 };  // keep the same as config.js
-const CAPACITY    = { Captain: 8, Player: 40, Goalkeeper: 8 };       // per type
-const TOTAL_CAPACITY = 56;
-const OPEN_AT     = '2026-12-16T00:00:00+06:00';                     // normal opening time (admin panel can override)
-const CLOSE_AT    = '';                                              // normal closing time. Empty = none (admin panel can override)
+const FEES        = { Player: 220, Goalkeeper: 220, Captain: 700 };  // keep the same as config.js
+const CAPACITY    = { Captain: 8, Player: 48, Goalkeeper: 8 };       // per type
+const TOTAL_CAPACITY = 64;
+const OPEN_AT     = '2026-12-01T00:00:00+06:00';                     // normal opening time (admin panel can override)
+const CLOSE_AT    = '2027-01-23T23:59:00+06:00';                                              // normal closing time. Empty = none (admin panel can override)
 const AGE_MIN     = 12;
 const AGE_MAX     = 25;
 const NOTIFY      = '';                                              // alert email. Empty = your own Google account email.
@@ -39,8 +39,8 @@ const OFF_TYPES = Object.keys(CAPACITY), OFF_PAY = ['Cash', 'bKash', 'Nagad', 'O
 const SCHEMAS = {
   news: ['id', 'title', 'date', 'summary', 'link', 'image'],
   s7teams: ['name', 'group', 'captain', 'note'],
-  s7schedule: ['date', 'time', 'home', 'away', 'venue', 'stage'],
-  s7results: ['home', 'away', 'hs', 'as', 'stage', 'date', 'scorers', 'motm'],
+  // one record per match. hs/as = score of the 90 minutes, hp/ap = penalty shootout (kept apart), sh/sa = scorers, status = draft | published | archived
+  s7matches: ['id', 'no', 'stage', 'home', 'away', 'hs', 'as', 'hp', 'ap', 'sh', 'sa', 'motm', 'date', 'time', 'venue', 'status'],
   s7awards: ['title', 'winner', 'note'],
   gallery: ['url', 'caption', 'season'],
   highlights: ['title', 'url', 'season']
@@ -168,7 +168,8 @@ function summary(season) {
 function getSettings() {
   const s = readJson('settings', {});
   return { mode: ['auto', 'open', 'locked'].indexOf(s.mode) >= 0 ? s.mode : 'auto', opensAt: s.opensAt || '', closesAt: s.closesAt || '',
-           notice: s.notice || '', noticeLink: s.noticeLink || '' };
+           notice: s.notice || '', noticeLink: s.noticeLink || '',
+           archive: s.archive === 'on' ? 'on' : '', archiveAt: s.archiveAt || '' };
 }
 function effOpen() {
   const s = getSettings();
@@ -179,14 +180,22 @@ function effOpen() {
 function effClose() { const s = getSettings(); return s.mode === 'auto' ? (s.closesAt || CLOSE_AT) : ''; }
 function openForTest() { saveSettings({ mode: 'open' }); }          // kept for the old guide; the admin panel does this now
 function lockRegistration() { saveSettings({ mode: 'auto' }); }
+// Season 6 archive: on when switched on in the admin panel, or automatically from the chosen date
+function effArchived() { const s = getSettings(); return s.archive === 'on' || (!!s.archiveAt && Date.now() >= new Date(s.archiveAt).getTime()); }
 function saveSettings(patch) { writeJson('settings', Object.assign(getSettings(), patch)); }
 
 // ================= public site content =================
+// Drafts and archived matches never leave the server. Visitors only get published ones.
+function publicOnly(key, list) {
+  return key === 's7matches' ? list.filter(m => m && m.status === 'published') : list;
+}
 function publicContent(page) {
   const all = readContent(), s = getSettings(), out = { ok: true, collections: {}, v: 0 };
-  Object.keys(SCHEMAS).forEach(k => { out.collections[k] = all[k] ? safeParse(all[k].value, []) : []; });
-  out.settings = { opensAt: effOpen(), closesAt: effClose(), notice: s.notice, noticeLink: s.noticeLink };
+  Object.keys(SCHEMAS).forEach(k => { out.collections[k] = publicOnly(k, all[k] ? safeParse(all[k].value, []) : []); });
+  out.settings = { opensAt: effOpen(), closesAt: effClose(), notice: s.notice, noticeLink: s.noticeLink, archived: effArchived() };
   if (/^[a-z0-9-]+\.html$/.test(page)) out.patches = all['patch:' + page] ? safeParse(all['patch:' + page].value, []) : [];
+  const tx = k => all[k] ? safeParse(all[k].value, []) : [];
+  out.texts = { g: tx('text:*'), p: /^[a-z0-9-]+\.html$/.test(page) ? tx('text:' + page) : [] };
   Object.keys(all).forEach(k => { out.v = Math.max(out.v, all[k].updated); });
   return out;
 }
@@ -263,7 +272,7 @@ function offlineSave(d) {
   const sh = offSheet(), rows = readOffline();
   const editing = it.id ? rows.filter(r => r.id === String(it.id))[0] : null;
   if (it.id && !editing) return reply({ ok: false, error: 'notfound' });
-  if (st === 'Confirmed') {                                                // must fit inside the same 56 places
+  if (st === 'Confirmed') {                                                // must fit inside the same 64 places
     const c = counts(SEASON).combined;
     const was = editing && editing.status === 'Confirmed' && editing.season === SEASON ? editing.type : null;
     const total = c.total - (was ? 1 : 0), ofType = c[type] - (was === type ? 1 : 0);
@@ -290,33 +299,53 @@ function settingsSave(d) {
   const s = d.settings || {};
   const iso = v => (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?([+-]\d{2}:\d{2}|Z)$/.test(String(v)) ? String(v) : '');
   saveSettings({ mode: ['auto', 'open', 'locked'].indexOf(s.mode) >= 0 ? s.mode : 'auto', opensAt: iso(s.opensAt), closesAt: iso(s.closesAt),
-                 notice: clean(s.notice, 240), noticeLink: safeUrl(s.noticeLink) });
+                 notice: clean(s.notice, 240), noticeLink: safeUrl(s.noticeLink),
+                 archive: s.archive === 'on' ? 'on' : '', archiveAt: iso(s.archiveAt) });
   return reply({ ok: true, settings: getSettings(), effective: { opensAt: effOpen(), closesAt: effClose() } });
 }
 
+const TEXT_KEY = /^text:(\*|[a-z0-9-]+\.html)$/;
+const TEXT_ATTRS = ['', 'ph', 'ttl', 'md', 'alt', 'aria'];                 // text, placeholder, page title, search description, image alt, aria-label
+function cleanRule(it) {
+  const f = v => String(v == null ? '' : v).replace(/[\u0000-\u001F]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 400);
+  const a = String((it && it.a) || '');
+  return { k: f(it && it.k), kb: f(it && it.kb), en: f(it && it.en), bn: f(it && it.bn), a: TEXT_ATTRS.indexOf(a) >= 0 ? a : '' };
+}
 function contentGet(d) {
   const key = String(d.key || '');
-  if (!SCHEMAS[key] && !/^patch:[a-z0-9-]+\.html$/.test(key)) return reply({ ok: false, error: 'invalid' });
+  if (!SCHEMAS[key] && !/^patch:[a-z0-9-]+\.html$/.test(key) && !TEXT_KEY.test(key)) return reply({ ok: false, error: 'invalid' });
   return reply({ ok: true, value: readJson(key, []) });
 }
 function contentSave(d) {
   const key = String(d.key || ''), val = d.value;
-  if (!Array.isArray(val) || val.length > 300) return reply({ ok: false, error: 'invalid' });
+  if (!Array.isArray(val) || val.length > 800) return reply({ ok: false, error: 'invalid' });
   let out;
   if (SCHEMAS[key]) {
     out = val.map(it => {
       const o = {};
       SCHEMAS[key].forEach(f => {
-        let v = String((it && it[f] != null) ? it[f] : '').trim().slice(0, f === 'summary' || f === 'scorers' ? 1500 : 300);
+        let v = String((it && it[f] != null) ? it[f] : '').trim().slice(0, f === 'summary' || f === 'scorers' || f === 'sh' || f === 'sa' ? 1500 : 300);
         if (URL_FIELDS.indexOf(f) >= 0) v = safeUrl(v);
         o[f] = v;
       });
       return o;
     });
+    if (key === 's7matches') {
+      const seen = {};
+      for (const m of out) {
+        m.id = m.id.replace(/[^A-Za-z0-9_-]/g, '').slice(0, 20);
+        if (!m.id || seen[m.id]) return reply({ ok: false, error: 'duplicate_id' });   // one id = one match, so a match can never be counted twice
+        seen[m.id] = 1;
+        ['hs', 'as', 'hp', 'ap', 'no'].forEach(f => { m[f] = /^\d{1,3}$/.test(m[f]) ? m[f] : ''; });
+        if (['draft', 'published', 'archived'].indexOf(m.status) < 0) m.status = 'draft';
+      }
+    }
   } else if (/^patch:[a-z0-9-]+\.html$/.test(key)) {
     out = val.filter(p => p && typeof p.p === 'string' && p.p.length < 300 && (p.l === 'en' || p.l === 'bn') &&
                           typeof p.h === 'string' && p.h.length < 4000 && !/<\s*(script|iframe|object|embed|style|link|meta)|\son\w+\s*=|javascript:/i.test(p.h))
              .map(p => ({ p: p.p, l: p.l, h: p.h, o: String(p.o || '').slice(0, 60) }));
+  } else if (TEXT_KEY.test(key)) {                                          // word-by-word text edits (original text -> new text)
+    out = val.map(cleanRule).filter(r => r.k && (r.en || r.bn));
   } else return reply({ ok: false, error: 'invalid' });
   if (JSON.stringify(out).length > 45000) return reply({ ok: false, error: 'too_big' });
   writeJson(key, out);

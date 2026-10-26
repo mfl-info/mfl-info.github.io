@@ -721,3 +721,7 @@ html.is-bn .leader-name,html.is-bn .top-name{letter-spacing:1.4px!important}
 html.mfl-editing [contenteditable=true]{outline:2px dashed var(--gold2);outline-offset:3px;cursor:text;min-width:20px}
 html.mfl-editing [contenteditable=true]:focus{outline-style:solid;background:rgba(216,173,75,.12)}
 @media(min-width:900px){#mfl-bar{bottom:20px}}
+
+.mfl-s6-hidden{display:none!important}
+.mfl-archive-bar{margin:14px auto;max-width:1100px;padding:12px 16px;border:1px solid #6d5425;background:rgba(216,173,75,.08);border-radius:10px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;font-size:14px;color:#e6dcc0}
+.mfl-archive-bar a{color:var(--gold2,#f3cf72);font-weight:700}
