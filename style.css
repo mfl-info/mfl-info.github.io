@@ -725,3 +725,16 @@ html.mfl-editing [contenteditable=true]:focus{outline-style:solid;background:rgb
 .mfl-s6-hidden{display:none!important}
 .mfl-archive-bar{margin:14px auto;max-width:1100px;padding:12px 16px;border:1px solid #6d5425;background:rgba(216,173,75,.08);border-radius:10px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;font-size:14px;color:#e6dcc0}
 .mfl-archive-bar a{color:var(--gold2,#f3cf72);font-weight:700}
+
+
+/* ===== v32: Season 7 pages use the Season 6 card design ===== */
+.schedule-coming .lead{max-width:640px;margin:12px auto 0;text-align:center}
+.mfl-fixtures .fixture-card{margin-bottom:12px}
+.fixture-card[hidden]{display:none}
+.mfl-s7cal{margin-top:0}
+.cal-all{align-self:flex-start;margin-top:8px;min-height:38px;padding:6px 16px;border-radius:999px;border:1px solid rgba(216,173,75,.35);background:rgba(216,173,75,.1);color:var(--gold2);font:700 12px Inter,Arial,sans-serif;letter-spacing:.6px;cursor:pointer}
+.cal-all:hover{background:rgba(216,173,75,.2)}
+.motm-card .motm-name{font:700 30px Oswald,Impact,sans-serif;color:var(--gold2);text-align:center;padding:18px 8px 6px;text-transform:uppercase;letter-spacing:.5px;overflow-wrap:anywhere}
+.motm-card .motm-sub{text-align:center;color:#aaa;font-size:13px;padding-bottom:4px}
+.mfl-body .regular-list{margin-top:18px}
+@media(max-width:560px){.motm-card .motm-name{font-size:26px}.mfl-calendar.mfl-s7cal{padding:16px}}

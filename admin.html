@@ -76,8 +76,9 @@ th{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--gold);
 </head>
 <body>
 <div id="app"></div><div id="toast"></div>
-<script src="config.js?v=31"></script>
-<script src="i18n.js?v=31"></script>
+<script src="config.js?v=32"></script>
+<script src="i18n.js?v=32"></script>
+<script>if(typeof CONFIG==='undefined'){document.addEventListener('DOMContentLoaded',function(){document.body.innerHTML='<div style="max-width:560px;margin:60px auto;padding:24px;font:16px/1.6 Arial;color:#f3cf72;background:#161010;border:1px solid #6d5425;border-radius:12px"><b>config.js file is missing on your website.</b><br>Put your own config.js (the one with your Apps Script link) back in the same folder as admin.html, then reload with Ctrl+F5.</div>'})}</script>
 <script>
 (function(){
 'use strict';
@@ -285,8 +286,9 @@ function upload(file){
   });
 }
 function tS7(box){
-  var keys=[['s7teams','Teams'],['s7matches','Matches'],['s7awards','Awards']],sub=el('div',{class:'sub'}),body=el('div'),on=keys[0][0];
-  function go(k){on=k;[].forEach.call(sub.children,function(b){b.classList.toggle('act',b.getAttribute('data-k')===k)});body.textContent='';(k==='s7matches'?matchesManager(body):coll(body,CFG[k])).catch(function(e){body.appendChild(el('div',{class:'msg err',text:e.message}))})}
+  var keys=[['s7teams','Teams'],['sched','Schedule'],['res','Result'],['s7awards','Awards']],sub=el('div',{class:'sub'}),body=el('div'),on=keys[0][0];
+  function go(k){on=k;[].forEach.call(sub.children,function(b){b.classList.toggle('act',b.getAttribute('data-k')===k)});body.textContent='';
+    (k==='s7teams'?teamsManager(body):k==='sched'?matchesManager(body,'schedule'):k==='res'?matchesManager(body,'result'):coll(body,CFG[k])).catch(function(e){body.appendChild(el('div',{class:'msg err',text:e.message}))})}
   keys.forEach(function(p){sub.appendChild(el('button',{class:'tab',type:'button','data-k':p[0],text:p[1],onclick:function(){go(p[0])}}))});
   box.append(sub,body);go(on);
 }
@@ -441,111 +443,271 @@ function tTexts(box){
 var pageCard=card;
 
 /* ---------------- Season 7 matches: one record per match ---------------- */
-function matchesManager(box){
-  return Promise.all([api('admin_content_get',{key:'s7matches'}),api('admin_content_get',{key:'s7teams'})]).then(function(rs){
-    var items=Array.isArray(rs[0].value)?rs[0].value:[],teams=(Array.isArray(rs[1].value)?rs[1].value:[]).map(function(t){return t.name}).filter(Boolean);
-    var STAGES=['Group Stage','Quarter-final','Semi-final','Third place','Final'],open={},filter='all',list=el('div'),dl=el('datalist',{id:'teamlist'},teams.map(function(t){return el('option',{value:t})}));
-    var saveAllBtn=el('button',{class:'gold',type:'button',text:'💾 Save all'}),stat=el('span',{class:'mut'});
-    function isNum(v){return /^\d+$/.test(String(v==null?'':v))}
-    function nextId(){var mx=0;items.forEach(function(m){var x=/^S7-M(\d+)$/.exec(m.id||'');if(x)mx=Math.max(mx,+x[1])});return 'S7-M'+(mx+1<10?'0':'')+(mx+1)}
-    function nextNo(){var mx=0;items.forEach(function(m){if(isNum(m.no))mx=Math.max(mx,+m.no)});return String(mx+1)}
-    function blank(){return {id:nextId(),no:nextNo(),stage:'Group Stage',home:'',away:'',hs:'',as:'',hp:'',ap:'',sh:'',sa:'',motm:'',date:'',time:'',venue:'',status:'draft'}}
-    function problems(m){
-      var e=[],w=[];
-      if(!norm(m.home)||!norm(m.away))e.push('Both team names are needed.');
-      else if(norm(m.home).toLowerCase()===norm(m.away).toLowerCase())e.push('Home and away team cannot be the same.');
-      if((m.hs!==''||m.as!=='')&&(!isNum(m.hs)||!isNum(m.as)))e.push('Enter both scores as numbers, or leave both empty.');
-      if((m.hp!==''||m.ap!=='')){
-        if(!isNum(m.hp)||!isNum(m.ap))e.push('Enter both penalty scores, or leave both empty.');
-        else if(!(isNum(m.hs)&&isNum(m.as)&&+m.hs===+m.as))e.push('A penalty shootout is only for a drawn match. The main score must be level.');
-        else if(+m.hp===+m.ap)e.push('Penalty scores cannot be level.');
-      }
-      [m.home,m.away].forEach(function(t){if(norm(t)&&teams.length&&teams.map(function(x){return x.toLowerCase()}).indexOf(norm(t).toLowerCase())<0)w.push('"'+norm(t)+'" is not in the Teams tab, so it will not get a place in the points table group.')});
-      return {e:e,w:w};
-    }
-    function counts(m){return m.status==='published'&&/group/i.test(m.stage||'')&&isNum(m.hs)&&isNum(m.as)}
+/* ---------------- Season 7: teams, schedule, results ---------------- */
+var TM_RE=/^\[\[(draft|archived)\]\]\s*/i;                 /* a team keeps its status at the start of its note: [[draft]] / [[archived]]; no marker = published */
+function tStatus(t){var m=TM_RE.exec(String(t.note||''));return m?m[1].toLowerCase():'published'}
+function tNote(t){return String(t.note||'').replace(TM_RE,'')}
+function tSet(t,st,note){t.note=(st==='published'?'':'[['+st+']] ')+(note==null?tNote(t):note)}
+
+/* names for the pick-lists: teams (all except archived) and registered players */
+function loadPickLists(){
+  return Promise.all([api('admin_content_get',{key:'s7teams'}),api('admin_apps').catch(function(){return {}}),api('admin_offline_list').catch(function(){return {}})]).then(function(rs){
+    var teams=(Array.isArray(rs[0].value)?rs[0].value:[]).filter(function(t){return t.name&&tStatus(t)!=='archived'}).map(function(t){return t.name});
+    var seen={},players=[];
+    function add(n){n=norm(n);if(n&&!seen[n.toLowerCase()]){seen[n.toLowerCase()]=1;players.push(n)}}
+    ((rs[1]&&rs[1].rows)||[]).forEach(function(r){if(['Approved','Payment submitted','Confirmed'].indexOf(r.status)>=0)add(r.name)});
+    ((rs[2]&&rs[2].rows)||[]).forEach(function(r){if(r.status==='Confirmed')add(r.name)});
+    players.sort(function(a,b){return a.localeCompare(b)});
+    return {teams:teams,players:players};
+  });
+}
+function pickInput(value,listId,ph,onchange){
+  var inp=el('input',{type:'text',list:listId,placeholder:ph||'Select or type to search',autocomplete:'off'});inp.value=value||'';
+  inp.addEventListener('input',function(){onchange(inp.value)});inp.addEventListener('change',function(){onchange(inp.value)});return inp;
+}
+function listOf(id,names){return el('datalist',{id:id},names.map(function(n){return el('option',{value:n})}))}
+
+function teamsManager(box){
+  return api('admin_content_get',{key:'s7teams'}).then(function(d){
+    var items=Array.isArray(d.value)?d.value:[],open={},filter='all',list=el('div'),stat=el('span',{class:'mut'});
+    items.forEach(function(t,i){t._k='t'+i});var seq=items.length;
     function persist(msg){
-      var all=items.slice();
-      return api('admin_content_save',{key:'s7matches',value:all}).then(function(x){
-        if(!x.ok)throw new Error(x.error==='duplicate_id'?'Two matches have the same Match ID.':x.error==='too_big'?'Too much text. Remove something.':'Could not save');
+      var out=items.map(function(t){return {name:norm(t.name),group:t.group||'',captain:norm(t.captain),note:t.note||''}});
+      return api('admin_content_save',{key:'s7teams',value:out}).then(function(x){
+        if(!x.ok)throw new Error(x.error==='too_big'?'Too much text. Remove something.':'Could not save');
         toast(msg||'Saved. The website is updated.');
       }).catch(function(e){toast(e.message,1);throw e});
     }
-    function preview(m){
-      var wrap=el('div',{class:'pvwrap',onclick:function(ev){if(ev.target===wrap)wrap.remove()}}),sc=isNum(m.hs)&&isNum(m.as)?m.hs+' – '+m.as+((isNum(m.hp)&&isNum(m.ap))?'  ('+m.hp+'–'+m.ap+' pens)':''):'vs';
-      function ln(t){return String(t||'').split(/\n+/).map(function(s){return s.trim()}).filter(Boolean).join(', ')}
-      var c=el('div',{class:'pv'},el('div',{class:'tagp',text:m.status==='published'?'LIVE ON THE WEBSITE':'PREVIEW · NOT VISIBLE TO VISITORS YET'}),
-        el('div',{class:'mut',text:[m.no?'Match '+m.no:'',m.stage,m.date,m.time].filter(Boolean).join(' · ')}),
-        el('div',{class:'big',text:(m.home||'TBA')+'   '+sc+'   '+(m.away||'TBA')}),
-        ln(m.sh)?el('div',{class:'mut',text:'Scorers: '+(m.home||'')+': '+ln(m.sh)}):null,
-        ln(m.sa)?el('div',{class:'mut',text:'Scorers: '+(m.away||'')+': '+ln(m.sa)}):null,
-        el('div',{class:'mut',text:'Man of the Match: '+(norm(m.motm)||'Not published')}),
-        m.venue?el('div',{class:'mut',text:m.venue}):null,
-        el('div',{style:'height:12px'}),el('button',{class:'gold',type:'button',text:'Close',onclick:function(){wrap.remove()}}));
-      wrap.appendChild(c);document.body.appendChild(wrap);
+    function problems(t){var e=[];if(!norm(t.name))e.push('Team name is needed.');
+      else if(items.some(function(o){return o!==t&&tStatus(o)!=='archived'&&norm(o.name).toLowerCase()===norm(t.name).toLowerCase()}))e.push('Another team already has this name.');return e}
+    function preview(t){
+      var wrap=el('div',{class:'pvwrap',onclick:function(ev){if(ev.target===wrap)wrap.remove()}}),st=tStatus(t);
+      wrap.appendChild(el('div',{class:'pv'},el('div',{class:'tagp',text:st==='published'?'LIVE ON THE WEBSITE':'PREVIEW \u2014 NOT VISIBLE TO VISITORS YET'}),
+        el('div',{class:'big',text:norm(t.name)||'(no name)'}),t.group?el('div',{class:'mut',text:'Group '+t.group}):null,t.captain?el('div',{class:'mut',text:'Captain: '+t.captain}):null,tNote(t)?el('div',{class:'mut',text:tNote(t)}):null,
+        el('div',{style:'height:12px'}),el('button',{class:'gold',type:'button',text:'Close',onclick:function(){wrap.remove()}})));
+      document.body.appendChild(wrap);
     }
-    function visible(){return items.filter(function(m){return filter==='all'||m.status===filter})}
-    function move(m,dir){
-      var v=visible(),i=v.indexOf(m),j=i+dir;if(j<0||j>=v.length)return;
-      var a=items.indexOf(m),b=items.indexOf(v[j]);var t=items[a];items[a]=items[b];items[b]=t;draw();
-    }
-    function field(m,k,label,type,extra){
-      var inp;
-      if(type==='textarea')inp=el('textarea',{rows:3});
-      else if(type==='stage'){inp=el('select',null,STAGES.map(function(s){return el('option',{value:s,text:s})}));}
-      else{inp=el('input',{type:type||'text'});if(extra&&extra.list)inp.setAttribute('list',extra.list);if(extra&&extra.ph)inp.placeholder=extra.ph;if(type==='number'){inp.min=0;inp.step=1}}
-      inp.value=m[k]||'';
-      if(type==='stage'&&STAGES.indexOf(m[k])<0)inp.value='Group Stage';
-      inp.addEventListener('input',function(){m[k]=inp.value;stat.textContent='Unsaved changes'});inp.addEventListener('change',function(){m[k]=inp.value});
-      return el('div',null,el('label',{text:label}),inp);
+    function setSt(t,st,msg){
+      if(st==='published'){var p=problems(t);if(p.length){toast(p[0],1);open[t._k]=1;draw();return}}
+      var old=t.note;tSet(t,st);persist(msg).then(draw).catch(function(){t.note=old;draw()});
     }
     function act(label,cls,fn){return el('button',{class:'sm '+(cls||''),type:'button',text:label,onclick:fn})}
-    function setStatus(m,s,msg){
-      var p=problems(m);
-      if(s==='published'&&p.e.length){toast(p.e[0],1);open[m.id]=1;draw();return}
-      if(!m.stage)m.stage='Group Stage';
-      var old=m.status;m.status=s;persist(msg).then(function(){draw()}).catch(function(){m.status=old;draw()});
+    function fld2(t,k,label,type){
+      var inp=type==='group'?el('select',null,['','A','B','C','D'].map(function(o){return el('option',{value:o,text:o||'(none)'})})):el('input',{type:'text'});
+      inp.value=k==='note'?tNote(t):(t[k]||'');
+      function put(){if(k==='note')tSet(t,tStatus(t),inp.value);else t[k]=inp.value;stat.textContent='Unsaved changes'}
+      inp.addEventListener('input',put);inp.addEventListener('change',put);return el('div',null,el('label',{text:label}),inp);
     }
-    function card(m){
-      var p=problems(m),sc=isNum(m.hs)&&isNum(m.as)?m.hs+'–'+m.as:'vs';
-      var head=el('div',{class:'mhead',onclick:function(){open[m.id]=!open[m.id];draw()}},
-        el('div',null,el('b',{text:'#'+(m.no||'?')+'  '+(m.home||'TBA')+'  '+sc+'  '+(m.away||'TBA')}),el('span',{class:'badge '+m.status,text:m.status}),
-          el('div',{class:'mut',text:[m.stage,m.date,m.id].filter(Boolean).join(' · ')+(counts(m)?' · counts in Points Table':'')})),
-        el('div',{class:'acts'},el('button',{class:'sm',type:'button',text:'↑',onclick:function(ev){ev.stopPropagation();move(m,-1)}}),el('button',{class:'sm',type:'button',text:'↓',onclick:function(ev){ev.stopPropagation();move(m,1)}}),el('span',{text:open[m.id]?'▲':'▼'})));
+    function move(t,dir){var v=visible(),i=v.indexOf(t),j=i+dir;if(j<0||j>=v.length)return;var a=items.indexOf(t),b=items.indexOf(v[j]);var x=items[a];items[a]=items[b];items[b]=x;draw()}
+    function visible(){return items.filter(function(t){return filter==='all'||tStatus(t)===filter})}
+    function card2(t){
+      var st=tStatus(t),p=problems(t);
+      var head=el('div',{class:'mhead',onclick:function(){open[t._k]=!open[t._k];draw()}},
+        el('div',null,el('b',{text:norm(t.name)||'(new team)'}),el('span',{class:'badge '+st,text:st}),el('div',{class:'mut',text:[t.group?'Group '+t.group:'',norm(t.captain)?'Captain '+norm(t.captain):''].filter(Boolean).join(' \u00b7 ')})),
+        el('div',{class:'acts'},el('button',{class:'sm',type:'button',text:'\u2191',onclick:function(ev){ev.stopPropagation();move(t,-1)}}),el('button',{class:'sm',type:'button',text:'\u2193',onclick:function(ev){ev.stopPropagation();move(t,1)}}),el('span',{text:open[t._k]?'\u25b2':'\u25bc'})));
       var row=el('div',{class:'mrow'},head);
-      if(open[m.id]){
+      if(open[t._k]){
         var b=el('div',{class:'mbody'});
-        b.append(el('div',{style:'height:10px'}),
-          el('div',{class:'row'},field(m,'no','Match number','number'),field(m,'stage','Stage','stage'),field(m,'date','Date','date'),field(m,'time','Time (e.g. 4:00 PM)','text'),field(m,'venue','Venue','text')),
-          el('div',{class:'row'},field(m,'home','Home team','text',{list:'teamlist'}),field(m,'away','Away team','text',{list:'teamlist'})),
-          el('div',{class:'row'},field(m,'hs','Home goals (full time)','number'),field(m,'as','Away goals (full time)','number')),
-          el('div',{class:'row'},field(m,'hp','Home penalty score (only if a shootout)','number'),field(m,'ap','Away penalty score (only if a shootout)','number')),
-          el('div',{class:'row'},field(m,'sh','Home scorers (one per line, e.g. Rakib - 2)','textarea'),field(m,'sa','Away scorers (one per line)','textarea')),
-          el('div',{class:'row'},field(m,'motm','Man of the Match (empty = "Not published")','text')));
-        p.e.forEach(function(t){b.appendChild(el('div',{class:'perr',text:'⚠ '+t}))});p.w.forEach(function(t){b.appendChild(el('div',{class:'warn',text:'ℹ '+t}))});
+        b.append(el('div',{style:'height:10px'}),el('div',{class:'row'},fld2(t,'name','Team name','text'),fld2(t,'group','Group','group'),fld2(t,'captain','Captain','text'),fld2(t,'note','Note','text')));
+        p.forEach(function(x){b.appendChild(el('div',{class:'perr',text:'\u2716 '+x}))});
         var A=el('div',{class:'flex'});
-        if(m.status==='draft'){A.append(act('Save draft','',function(){persist('Draft saved.').then(draw)}),act('Preview','',function(){preview(m)}),act('Publish','gold',function(){setStatus(m,'published','Published. The website is updated.')}),act('Archive','',function(){setStatus(m,'archived','Archived.')}))}
-        else if(m.status==='published'){A.append(act('Save changes','gold',function(){var q=problems(m);if(q.e.length){toast(q.e[0],1);return}persist().then(draw)}),act('Preview','',function(){preview(m)}),act('Unpublish','',function(){setStatus(m,'draft','Moved back to draft. Hidden from the website.')}),act('Archive','',function(){setStatus(m,'archived','Archived.')}))}
-        else{A.append(act('Restore to draft','gold',function(){setStatus(m,'draft','Restored as a draft.')}),act('Preview','',function(){preview(m)}))}
-        A.append(act('Use as template','',function(){var n=blank();n.stage=m.stage;n.date=m.date;n.time=m.time;n.venue=m.venue;items.splice(items.indexOf(m)+1,0,n);open[n.id]=1;filter='all';draw();toast('New draft created from the template. The old match is untouched.')}),
-          act('Delete','danger',function(){if(!confirm('Delete this match for good? (Archive keeps it hidden instead.)'))return;items.splice(items.indexOf(m),1);persist('Deleted.').then(draw)}));
+        if(st==='draft')A.append(act('Save draft','',function(){persist('Draft saved.').then(draw)}),act('Preview','',function(){preview(t)}),act('Publish','gold',function(){setSt(t,'published','Published. The Teams page is updated.')}),act('Archive','',function(){setSt(t,'archived','Archived.')}));
+        else if(st==='published')A.append(act('Save changes','gold',function(){var q=problems(t);if(q.length){toast(q[0],1);return}persist().then(draw)}),act('Preview','',function(){preview(t)}),act('Unpublish','',function(){setSt(t,'draft','Moved back to draft. Hidden from the website.')}),act('Archive','',function(){setSt(t,'archived','Archived.')}));
+        else A.append(act('Restore to draft','gold',function(){setSt(t,'draft','Restored as a draft.')}),act('Preview','',function(){preview(t)}));
+        A.append(act('Delete','danger',function(){if(!confirm('Delete this team for good? (Archive keeps it hidden instead.)'))return;items.splice(items.indexOf(t),1);persist('Deleted.').then(draw)}));
         b.appendChild(A);row.appendChild(b);
       }
       return row;
     }
     function draw(){
       list.textContent='';var v=visible();
-      if(!v.length)list.appendChild(el('p',{class:'mut',text:items.length?'No matches in this view.':'No matches yet. Press "+ Add new match". Until a match is published the website shows "Schedule will be announced".'}));
-      v.forEach(function(m){list.appendChild(card(m))});
-      var c={draft:0,published:0,archived:0};items.forEach(function(m){c[m.status]=(c[m.status]||0)+1});
-      stat.textContent=items.length+' matches · '+c.published+' published · '+c.draft+' draft · '+c.archived+' archived';
+      if(!v.length)list.appendChild(el('p',{class:'mut',text:items.length?'No teams in this view.':'No teams yet. Press "+ Add team". Until a team is published the Teams page shows "To be announced".'}));
+      v.forEach(function(t){list.appendChild(card2(t))});
+      var c={draft:0,published:0,archived:0};items.forEach(function(t){c[tStatus(t)]++});
+      stat.textContent=items.length+' teams \u00b7 '+c.published+' published \u00b7 '+c.draft+' draft \u00b7 '+c.archived+' archived';
     }
     var fsel=el('select',null,[['all','All'],['draft','Draft'],['published','Published'],['archived','Archived']].map(function(o){return el('option',{value:o[0],text:o[1]})}));
     fsel.addEventListener('change',function(){filter=fsel.value;draw()});
-    var add=el('button',{class:'gold',type:'button',text:'+ Add new match',onclick:function(){var n=blank();items.push(n);open[n.id]=1;filter='all';fsel.value='all';draw()}});
-    saveAllBtn.addEventListener('click',function(){saveAllBtn.disabled=true;persist().then(draw).catch(function(){}).then(function(){saveAllBtn.disabled=false})});
-    var k=pageCard('Season 7 matches','One record per match. A match is private until you press Publish. Results, schedule, Man of the Match, share cards and the points table all read the same record, so changing a score here changes it everywhere. Points: win 3, draw 1, loss 0, counted only for published Group Stage matches with a score. A penalty shootout never changes the main score.');
-    k.append(dl,el('div',{class:'row'},el('div',null,el('label',{text:'Show'}),fsel)),el('div',{style:'height:8px'}),el('div',{class:'flex'},add,saveAllBtn),stat,list);
+    var add=el('button',{class:'gold',type:'button',text:'+ Add team',onclick:function(){var t={name:'',group:'',captain:'',note:'[[draft]] ',_k:'t'+(seq++)};items.push(t);open[t._k]=1;filter='all';fsel.value='all';draw()}});
+    var saveAll=el('button',{class:'gold',type:'button',text:'\ud83d\udcbe Save all',onclick:function(){saveAll.disabled=true;persist().then(draw).catch(function(){}).then(function(){saveAll.disabled=false})}});
+    var k=pageCard('Season 7 teams','A new team is private (draft) until you press Publish. Published teams appear on the Teams page and get their place in the Points Table. Unpublish or Archive hides a team again without deleting it.');
+    k.append(el('div',{class:'row'},el('div',null,el('label',{text:'Show'}),fsel)),el('div',{style:'height:8px'}),el('div',{class:'flex'},add,saveAll),stat,list);
+    box.appendChild(k);draw();
+  });
+}
+
+/* One list of matches (the same records the website reads). Two views of it:
+   SCHEDULE = when and who plays (publish => schedule page + calendar)
+   RESULT   = pick a match from the schedule, add goals / scorers / Man of the Match (publish => results page, points table, top scorers) */
+function matchesManager(box,mode){
+  var isRes=mode==='result';
+  return Promise.all([api('admin_content_get',{key:'s7matches'}),loadPickLists()]).then(function(rs){
+    var items=Array.isArray(rs[0].value)?rs[0].value:[],teams=rs[1].teams,players=rs[1].players;
+    var STAGES=['Group Stage','Quarter-final','Semi-final','Third place','Final'],open={},filter='all',picked='',list=el('div');
+    var dl=[listOf('teamlist',teams),listOf('playerlist',players)];
+    var stat=el('span',{class:'mut'});
+    function isNum(v){return /^\d+$/.test(String(v==null?'':v))}
+    function hasRes(m){return isNum(m.hs)&&isNum(m.as)}
+    function nextId(){var mx=0;items.forEach(function(m){var x=/^S7-M(\d+)$/.exec(m.id||'');if(x)mx=Math.max(mx,+x[1])});return 'S7-M'+(mx+1<10?'0':'')+(mx+1)}
+    function nextNo(){var mx=0;items.forEach(function(m){if(isNum(m.no))mx=Math.max(mx,+m.no)});return String(mx+1)}
+    function blank(){return {id:nextId(),no:nextNo(),stage:'Group Stage',home:'',away:'',hs:'',as:'',hp:'',ap:'',sh:'',sa:'',motm:'',date:'',time:'',venue:'',status:'draft'}}
+    function lc(a){return norm(a).toLowerCase()}
+    function schedProblems(m){
+      var e=[],w=[];
+      if(!norm(m.home)||!norm(m.away))e.push('Both team names are needed.');
+      else if(lc(m.home)===lc(m.away))e.push('Home and away team cannot be the same.');
+      if(!m.date)e.push('Choose the match date, so the calendar can show it.');
+      [m.home,m.away].forEach(function(t){if(norm(t)&&teams.length&&teams.map(lc).indexOf(lc(t))<0)w.push('"'+norm(t)+'" is not in the Teams tab, so it will not get a place in the points table group.')});
+      return {e:e,w:w};
+    }
+    function resProblems(m){
+      var e=[];
+      if(!isNum(m.hs)||!isNum(m.as))e.push('Enter both goals (full time) as numbers.');
+      if((m.hp!==''||m.ap!=='')){
+        if(!isNum(m.hp)||!isNum(m.ap))e.push('Enter both penalty scores, or leave both empty.');
+        else if(!(isNum(m.hs)&&isNum(m.as)&&+m.hs===+m.as))e.push('A penalty shootout is only for a drawn match. The main score must be level.');
+        else if(+m.hp===+m.ap)e.push('Penalty scores cannot be level.');
+      }
+      return e;
+    }
+    function persist(msg){
+      return api('admin_content_save',{key:'s7matches',value:items.slice()}).then(function(x){
+        if(!x.ok)throw new Error(x.error==='duplicate_id'?'Two matches have the same Match ID.':x.error==='too_big'?'Too much text. Remove something.':'Could not save');
+        toast(msg||'Saved. The website is updated.');
+      }).catch(function(e){toast(e.message,1);throw e});
+    }
+    function ln(t){return String(t||'').split(/\n+/).map(function(x){return x.trim()}).filter(Boolean).join(', ')}
+    function actB(label,cls,fn){return el('button',{class:'sm '+(cls||''),type:'button',text:label,onclick:fn})}
+    function showPv(c){var wrap=el('div',{class:'pvwrap',onclick:function(ev){if(ev.target===wrap)wrap.remove()}});c.appendChild(el('div',{style:'height:12px'}));c.appendChild(el('button',{class:'gold',type:'button',text:'Close',onclick:function(){wrap.remove()}}));wrap.appendChild(c);document.body.appendChild(wrap)}
+    function previewSched(m){
+      showPv(el('div',{class:'pv'},el('div',{class:'tagp',text:m.status==='published'?'LIVE ON THE SCHEDULE PAGE':'PREVIEW \u2014 NOT VISIBLE TO VISITORS YET'}),
+        el('div',{class:'mut',text:[m.no?'Match '+m.no:'',m.stage].filter(Boolean).join(' \u00b7 ')}),el('div',{class:'big',text:(m.home||'TBA')+'   VS   '+(m.away||'TBA')}),
+        el('div',{class:'mut',text:[m.date,m.time].filter(Boolean).join(' \u00b7 ')}),m.venue?el('div',{class:'mut',text:m.venue}):null));
+    }
+    function previewRes(m){
+      var sc=hasRes(m)?m.hs+' \u2013 '+m.as:'vs';
+      showPv(el('div',{class:'pv'},el('div',{class:'tagp',text:hasRes(m)&&m.status==='published'&&m._live?'LIVE ON THE RESULTS PAGE':'PREVIEW \u2014 NOT VISIBLE TO VISITORS YET'}),
+        el('div',{class:'mut',text:[m.no?'MATCH '+m.no:'',m.stage].filter(Boolean).join(' \u00b7 ')}),el('div',{class:'big',text:(m.home||'TBA')+'   '+sc+'   '+(m.away||'TBA')}),
+        ln(m.sh)?el('div',{class:'mut',text:(m.home||'')+': '+ln(m.sh)}):null,ln(m.sa)?el('div',{class:'mut',text:(m.away||'')+': '+ln(m.sa)}):null,
+        (isNum(m.hp)&&isNum(m.ap))?el('div',{class:'mut',text:'Penalties: '+m.hp+' \u2013 '+m.ap}):null,
+        el('div',{class:'mut',text:'Man of the Match: '+(norm(m.motm)||'Not published')})));
+    }
+    function field(m,k,label,type,extra){
+      var inp;
+      if(type==='textarea')inp=el('textarea',{rows:3});
+      else if(type==='stage'){inp=el('select',null,STAGES.map(function(x){return el('option',{value:x,text:x})}))}
+      else{inp=el('input',{type:type||'text'});if(extra&&extra.list)inp.setAttribute('list',extra.list);if(extra&&extra.ph)inp.placeholder=extra.ph;if(type==='number'){inp.min=0;inp.step=1}}
+      inp.value=m[k]||'';if(type==='stage'&&STAGES.indexOf(m[k])<0)inp.value='Group Stage';
+      inp.addEventListener('input',function(){m[k]=inp.value;stat.textContent='Unsaved changes'});inp.addEventListener('change',function(){m[k]=inp.value});
+      return el('div',null,el('label',{text:label}),inp);
+    }
+    /* scorers: one row per player (pick or type a name + goals). Saved in the same "Name - 2" lines as before. */
+    function scorersBox(m,k,label){
+      var rows=[];String(m[k]||'').split(/\n+/).forEach(function(l){l=norm(l);if(!l)return;var x=/^(.*?)[\s\-\u2013:x\u00d7]*\(?(\d{1,2})\)?$/.exec(l);rows.push(x&&norm(x[1])?{n:norm(x[1]),g:x[2]}:{n:l,g:'1'})});
+      var wrap=el('div'),box2=el('div');
+      function sync(){m[k]=rows.filter(function(r){return norm(r.n)}).map(function(r){return norm(r.n)+' - '+(isNum(r.g)&&+r.g>0?r.g:'1')}).join('\n');stat.textContent='Unsaved changes'}
+      function draw2(){
+        box2.textContent='';
+        rows.forEach(function(r,i){
+          var g=el('input',{type:'number',min:1,step:1,style:'max-width:90px'});g.value=r.g;g.addEventListener('input',function(){r.g=g.value;sync()});
+          box2.appendChild(el('div',{class:'flex',style:'margin-bottom:6px;flex-wrap:nowrap'},pickInput(r.n,'playerlist','Player (select or type)',function(v){r.n=v;sync()}),g,el('button',{class:'sm danger',type:'button',text:'\u2715','aria-label':'Remove',onclick:function(){rows.splice(i,1);sync();draw2()}})));
+        });
+      }
+      draw2();
+      wrap.append(el('label',{text:label}),box2,el('button',{class:'sm',type:'button',text:'+ Add scorer',onclick:function(){rows.push({n:'',g:'1'});draw2()}}));
+      return wrap;
+    }
+    function setStatus(m,s,msg){
+      var old=m.status;
+      if(s==='published'){var p=schedProblems(m);if(p.e.length){toast(p.e[0],1);open[m.id]=1;draw();return}}
+      if(!m.stage)m.stage='Group Stage';
+      m.status=s;persist(msg).then(draw).catch(function(){m.status=old;draw()});
+    }
+    function move(m,dir){var v=visible(),i=v.indexOf(m),j=i+dir;if(j<0||j>=v.length)return;var a=items.indexOf(m),b=items.indexOf(v[j]);var t=items[a];items[a]=items[b];items[b]=t;draw()}
+    function visible(){
+      if(isRes)return items.filter(function(m){return m.status==='published'});
+      return items.filter(function(m){return filter==='all'||m.status===filter});
+    }
+    function move2(){}
+
+    /* ---------- SCHEDULE view ---------- */
+    function schedCard(m){
+      var p=schedProblems(m);
+      var head=el('div',{class:'mhead',onclick:function(){open[m.id]=!open[m.id];draw()}},
+        el('div',null,el('b',{text:'#'+(m.no||'?')+'  '+(m.home||'TBA')+'  vs  '+(m.away||'TBA')}),el('span',{class:'badge '+m.status,text:m.status}),
+          el('div',{class:'mut',text:[m.stage,m.date,m.time].filter(Boolean).join(' \u00b7 ')+(hasRes(m)?' \u00b7 result added':'')})),
+        el('div',{class:'acts'},el('button',{class:'sm',type:'button',text:'\u2191',onclick:function(ev){ev.stopPropagation();move(m,-1)}}),el('button',{class:'sm',type:'button',text:'\u2193',onclick:function(ev){ev.stopPropagation();move(m,1)}}),el('span',{text:open[m.id]?'\u25b2':'\u25bc'})));
+      var row=el('div',{class:'mrow'},head);
+      if(open[m.id]){
+        var b=el('div',{class:'mbody'});
+        b.append(el('div',{style:'height:10px'}),
+          el('div',{class:'row'},field(m,'no','Match number','number'),field(m,'stage','Stage','stage'),field(m,'date','Date (the calendar jumps to this day)','date'),field(m,'time','Time (e.g. 4:00 PM)','text'),field(m,'venue','Venue','text')),
+          el('div',{class:'row'},field(m,'home','Home team (select or type)','text',{list:'teamlist'}),field(m,'away','Away team (select or type)','text',{list:'teamlist'})));
+        p.e.forEach(function(t){b.appendChild(el('div',{class:'perr',text:'\u2716 '+t}))});p.w.forEach(function(t){b.appendChild(el('div',{class:'warn',text:'\u26a0 '+t}))});
+        var A=el('div',{class:'flex'});
+        if(m.status==='draft')A.append(actB('Save draft','',function(){persist('Draft saved.').then(draw)}),actB('Preview','',function(){previewSched(m)}),actB('Publish','gold',function(){setStatus(m,'published','Published. The Schedule page and calendar are updated.')}),actB('Archive','',function(){setStatus(m,'archived','Archived.')}));
+        else if(m.status==='published')A.append(actB('Save changes','gold',function(){var q=schedProblems(m);if(q.e.length){toast(q.e[0],1);return}persist().then(draw)}),actB('Preview','',function(){previewSched(m)}),actB('Unpublish','',function(){setStatus(m,'draft','Moved back to draft. Hidden from the website.')}),actB('Archive','',function(){setStatus(m,'archived','Archived.')}));
+        else A.append(actB('Restore to draft','gold',function(){setStatus(m,'draft','Restored as a draft.')}),actB('Preview','',function(){previewSched(m)}));
+        A.append(actB('Use as template','',function(){var n=blank();n.stage=m.stage;n.date=m.date;n.time=m.time;n.venue=m.venue;items.splice(items.indexOf(m)+1,0,n);open[n.id]=1;filter='all';draw();toast('New draft created from the template. The old match is untouched.')}),
+          actB('Delete','danger',function(){if(!confirm('Delete this match for good? (Archive keeps it hidden instead.)'))return;items.splice(items.indexOf(m),1);persist('Deleted.').then(draw)}));
+        b.appendChild(A);row.appendChild(b);
+      }
+      return row;
+    }
+
+    /* ---------- RESULT view ---------- */
+    var holder=el('div');
+    function resultForm(m){
+      holder.textContent='';
+      var wasPub=hasRes(m);
+      var f=el('div',{class:'mrow'},el('div',{class:'mhead',style:'cursor:default'},el('div',null,el('b',{text:'#'+(m.no||'?')+'  '+(m.home||'TBA')+'  vs  '+(m.away||'TBA')}),el('span',{class:'badge '+(wasPub?'published':'draft'),text:wasPub?'result live':'no result yet'}),
+        el('div',{class:'mut',text:[m.stage,m.date,m.time].filter(Boolean).join(' \u00b7 ')}))));
+      var b=el('div',{class:'mbody'});
+      b.append(el('div',{style:'height:10px'}),
+        el('div',{class:'row'},el('div',null,el('label',{text:'Home team'}),el('input',{type:'text',value:m.home,disabled:true})),el('div',null,el('label',{text:'Away team'}),el('input',{type:'text',value:m.away,disabled:true}))),
+        el('div',{class:'row'},field(m,'hs','Home goals (full time)','number'),field(m,'as','Away goals (full time)','number')),
+        el('div',{class:'row'},field(m,'hp','Home penalty score (only if a shootout)','number'),field(m,'ap','Away penalty score (only if a shootout)','number')),
+        el('div',{class:'row'},scorersBox(m,'sh',(m.home||'Home')+' scorers'),scorersBox(m,'sa',(m.away||'Away')+' scorers')),
+        el('div',{class:'row'},el('div',null,el('label',{text:'Man of the Match (select or type; empty = "Not published")'}),pickInput(m.motm,'playerlist','Select or type to search',function(v){m.motm=v;stat.textContent='Unsaved changes'}))));
+      var errs=el('div'),A=el('div',{class:'flex'});
+      function check(){var e=resProblems(m);errs.textContent='';e.forEach(function(t){errs.appendChild(el('div',{class:'perr',text:'\u2716 '+t}))});return e}
+      A.append(actB('Preview','',function(){m._live=wasPub;previewRes(m)}),
+        actB(wasPub?'Update result':'Publish result','gold',function(){var e=check();if(e.length){toast(e[0],1);return}persist(wasPub?'Result updated on the Results page.':'Result published. The Results page, Man of the Match, Top Scorers and Points Table are updated.').then(function(){picked=m.id;draw()})}));
+      if(wasPub)A.append(actB('Remove result','danger',function(){if(!confirm('Remove this result from the website? The match stays on the schedule.'))return;['hs','as','hp','ap','sh','sa','motm'].forEach(function(k){m[k]=''});persist('Result removed. The match is still on the schedule.').then(function(){picked=m.id;draw()})}));
+      b.append(errs,A);f.appendChild(b);holder.appendChild(f);
+    }
+    function drawResult(){
+      list.textContent='';var v=visible();
+      if(!v.length){list.appendChild(el('p',{class:'mut',text:'No matches on the schedule yet. First add and publish the match in the Schedule tab. Then it appears here.'}));holder.textContent='';return}
+      var sel=el('select',null,[el('option',{value:'',text:'\u2014 Select a match \u2014'})].concat(v.map(function(m){return el('option',{value:m.id,text:'#'+(m.no||'?')+'  '+(m.home||'TBA')+' vs '+(m.away||'TBA')+(m.date?'  \u00b7 '+m.date:'')+(hasRes(m)?'  \u2713 result':'')})})));
+      sel.value=v.some(function(m){return m.id===picked})?picked:'';
+      sel.addEventListener('change',function(){picked=sel.value;var m=items.filter(function(x){return x.id===picked})[0];if(m)resultForm(m);else holder.textContent=''});
+      list.append(el('div',{class:'row'},el('div',null,el('label',{text:'Match (from the schedule)'}),sel)));
+      var cur=items.filter(function(x){return x.id===picked})[0];if(cur&&cur.status==='published')resultForm(cur);else holder.textContent='';
+      var done=v.filter(hasRes).length;stat.textContent=v.length+' matches on the schedule \u00b7 '+done+' with a result';
+    }
+
+    function draw(){
+      if(isRes){drawResult();return}
+      list.textContent='';var v=visible();
+      if(!v.length)list.appendChild(el('p',{class:'mut',text:items.length?'No matches in this view.':'No matches yet. Press "+ Add match". Until a match is published the Schedule page shows "Schedule will be announced".'}));
+      v.forEach(function(m){list.appendChild(schedCard(m))});
+      var c={draft:0,published:0,archived:0};items.forEach(function(m){c[m.status]=(c[m.status]||0)+1});
+      stat.textContent=items.length+' matches \u00b7 '+c.published+' published \u00b7 '+c.draft+' draft \u00b7 '+c.archived+' archived';
+    }
+
+    var k;
+    if(isRes){
+      k=pageCard('Season 7 results','Pick a match that is already on the schedule. The teams and match number come from the schedule, so you only add goals, penalties, scorers and Man of the Match. Press Preview to check how it looks, then Publish result: the Results page, Man of the Match, Top Scorers and Points Table update together. Points: win 3, draw 1, loss 0 (published Group Stage matches only). A penalty shootout never changes the main score.');
+      k.append.apply(k,dl.concat([list,holder,stat]));
+    }else{
+      var fsel=el('select',null,[['all','All'],['draft','Draft'],['published','Published'],['archived','Archived']].map(function(o){return el('option',{value:o[0],text:o[1]})}));
+      fsel.addEventListener('change',function(){filter=fsel.value;draw()});
+      var add=el('button',{class:'gold',type:'button',text:'+ Add match',onclick:function(){var n=blank();items.push(n);open[n.id]=1;filter='all';fsel.value='all';draw()}});
+      var saveAll=el('button',{class:'gold',type:'button',text:'\ud83d\udcbe Save all',onclick:function(){saveAll.disabled=true;persist().then(draw).catch(function(){}).then(function(){saveAll.disabled=false})}});
+      k=pageCard('Season 7 schedule','Add each fixture: stage, date, time, venue and the two teams (select from the list or type to search). A match stays private until you press Publish. Published matches show on the Schedule page and the calendar jumps to their date. The score is never shown on the schedule: add it later in the Result tab.');
+      k.append.apply(k,dl.concat([el('div',{class:'row'},el('div',null,el('label',{text:'Show'}),fsel)),el('div',{style:'height:8px'}),el('div',{class:'flex'},add,saveAll),stat,list]));
+    }
     box.appendChild(k);draw();
   });
 }
